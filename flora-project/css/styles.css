@@ -1,0 +1,811 @@
+/*
+ * Flora — main stylesheet: design tokens (:root) from the Figma macet.
+ * Frames: Home • Mobile (8238:18962, 375) · Home • Tablet (8238:1241, 768) ·
+ *         Home • Desktop (8203:59903, 1440).
+ * Mobile-First: :root holds base (mobile) values; @media (min-width) blocks
+ * override only the tokens that change. Section styles reference these
+ * variables only, never raw hex/px (CLAUDE.md golden rule #2).
+ * Done so far: global base, Header, Hero. (About → Footer come next.)
+ */
+
+:root {
+  /* ── Colors (global, no breakpoint changes) ─────────────── */
+  --color-text: #030c01; /* Color Scheme 1/Text · Neutral Darkest */
+  --color-neutral-darkest: #030c01;
+  --color-background: #ffffff; /* Color Scheme 1/Background */
+  --color-foreground: #ffffff; /* Color Scheme 1/Foreground */
+  /* Opacity/Neutral Darkest 15 — 8-digit hex = rgba(3, 12, 1, 0.15) */
+  --color-border: #030c0126;
+  --color-divider: #030c0126;
+  --color-barberry: #e8e81c; /* Color/Barberry — CTA gradient start */
+  --color-harlequin: #42ed13; /* Color/Harlequin — CTA gradient end */
+  /* Color Scheme 5/Background — light yellow surface */
+  --color-accent-surface: #eeee60;
+
+  /* Primary button fill (CTA): barberry → harlequin gradient */
+  --gradient-cta: linear-gradient(
+    140.7deg,
+    var(--color-barberry) 0%,
+    var(--color-harlequin) 100%
+  );
+  /* Hero background — exact 4-stop from get_code */
+  --gradient-hero: linear-gradient(
+    180deg,
+    #f1f1f1 0%,
+    #f3f3f5 12.82%,
+    #f5f5f7 30.5%,
+    #fcfcfc 100%
+  );
+
+  /* ── Typography ─────────────────────────────────────────── */
+  --font-heading: 'Hanuman', Georgia, serif;
+  --font-body: 'Roboto', system-ui, -apple-system, sans-serif;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+
+  /* Body sizes (Text Sizes/* — global, identical on every breakpoint) */
+  --fs-text-large: 1.25rem; /* 20px */
+  --fs-text-medium: 1.125rem; /* 18px */
+  --fs-text-regular: 1rem; /* 16px — base */
+  --fs-text-small: 0.875rem; /* 14px */
+
+  /*
+   * Heading display scale (Hanuman). ADAPTIVE — two scales in the macet:
+   *   Mobile + Tablet → display/Mobile (xxl 36, xl 34, lg 32, xs 18)
+   *   Desktop ≥1440   → display/Desktop (xxl 56, xl 48)
+   * Base below = Mobile/Tablet; Desktop overrides in the @media block.
+   */
+  --fs-h1: 2.25rem; /* 36px — display/Mobile/xxl */
+  --fs-h2: 2.125rem; /* 34px — display/Mobile/xl */
+  --fs-h3: 2rem; /* 32px — display/Mobile/lg */
+  --fs-eyebrow: 1.125rem; /* 18px — display/Mobile/xs */
+
+  /* Line heights */
+  --lh-heading: 1.2; /* display xxl/xl/lg */
+  --lh-heading-tight: 1.4; /* display/xs */
+  --lh-body: 1.5; /* Text/* */
+
+  /* Letter spacing (Figma letterSpacing −1% on display styles) */
+  --ls-heading: -0.01em;
+  --ls-body: 0;
+
+  /* ── Breakpoints ────────────────────────────────────────── */
+  /* Frame widths = breakpoints. Reference only: CSS can't use var() inside
+   * a @media query, so the literals 768px / 1440px are repeated below. */
+  --bp-tablet: 768px;
+  --bp-desktop: 1440px;
+
+  /* ── Spacing scale (macet gaps; reused across sections) ─── */
+  --space-8: 0.5rem;
+  --space-12: 0.75rem;
+  --space-16: 1rem;
+  --space-24: 1.5rem;
+  --space-32: 2rem;
+  --space-40: 2.5rem;
+  --space-48: 3rem;
+  --space-64: 4rem;
+  --space-80: 5rem;
+
+  /* ── Spacing & layout (ADAPTIVE) ────────────────────────── */
+  --container-max: 1280px; /* Container/container-large (content cap) */
+  --container-pad: 20px; /* side gutter — Mobile (Tablet 32, Desktop 80) */
+  --section-pad-y: 64px; /* vertical section padding — Mobile/Tablet (Desktop 92) */
+  --max-width-large: 768px; /* Max Width/max-width-large (narrow text blocks) */
+
+  /* Figma spacing tokens kept for reference (desktop values) */
+  --padding-global: 64px; /* Page Padding/padding-global */
+  --section-padding-medium: 80px; /* Section Padding/padding-section-medium */
+  --section-padding-large: 92px; /* Section Padding/padding-section-large */
+
+  /* ── Header / nav ───────────────────────────────────────── */
+  --header-height: 72px; /* Navbar frame height */
+  --nav-gap: 32px; /* inline link gap (get_code: gap-32) */
+  --tap-target: 48px; /* burger hit area */
+
+  /* ── Button ─────────────────────────────────────────────── */
+  --btn-py: 10px; /* hero/default CTA (get_code: py-10) */
+  --btn-px: 24px; /* get_code: px-24 */
+  --btn-py-sm: 8px; /* navbar CTA (get_code: py-8) */
+  --btn-px-sm: 20px; /* get_code: px-20 */
+
+  /* ── Hero (ADAPTIVE) ────────────────────────────────────── */
+  --hero-min-h: 510px; /* Mobile Header frame h510 (≥768 → 669) */
+  --hero-py: var(--space-48); /* hero text vertical padding 48 (Desktop → 80) */
+  --hero-text-max: 247px; /* text column width — Mobile (Tablet 340, Desktop 667) */
+
+  /* ── Section element sizes (desktop layout, ≥1440) ──────── */
+  --about-img-h: 428px; /* About content photo height */
+  --bestsellers-img-h: 320px; /* Top-Selling card image height */
+  --bouquets-img-h: 296px; /* Bouquets card image height (square) */
+  --bouquets-more-w: 406px; /* Show More button width */
+  --contacts-details-w: 500px; /* Contacts right column width */
+  --contacts-img-h: 720px; /* Contacts photo height */
+  --testimonial-h: 228px; /* Feedback card height */
+  --footer-logo-h: 126px; /* Footer logo height */
+
+  /* ── Radii / borders (global) ───────────────────────────── */
+  --radius-medium: 16px; /* Radius/Medium */
+  --radius-large: 16px; /* Radius/Large */
+  --radius-pill: 100px; /* CTA pill (get_code: rounded-[100px]) */
+  --border-width: 1px; /* Stroke/Border Width */
+  --divider-width: 1px; /* Stroke/Divider Width */
+}
+
+/* ════════════════════════════════════════════════════════════
+   Global base
+   ════════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote {
+  margin: 0;
+}
+
+.nav__list,
+.footer__list,
+.products,
+.socials,
+.contacts__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-text-regular);
+  line-height: var(--lh-body);
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.container {
+  width: 100%;
+  max-width: calc(var(--container-max) + 2 * var(--container-pad));
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--btn-py) var(--btn-px);
+  font-family: var(--font-body);
+  font-size: var(--fs-text-regular);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-body);
+  color: var(--color-neutral-darkest);
+  background-image: var(--gradient-cta);
+  border: var(--border-width) solid var(--color-barberry);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    filter 0.2s ease,
+    transform 0.2s ease;
+}
+
+.button:hover {
+  filter: brightness(0.96);
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+/* ════════════════════════════════════════════════════════════
+   Header — base (Mobile): logo + burger; nav is a hidden panel
+   ════════════════════════════════════════════════════════════ */
+.header {
+  position: relative;
+  background-color: var(--color-background);
+}
+
+.header__container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  min-height: var(--header-height);
+}
+
+.logo {
+  display: inline-flex;
+}
+
+.logo__image {
+  height: 36px;
+  width: auto;
+}
+
+.burger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  margin-left: auto;
+  padding: 0;
+  color: var(--color-text);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.burger__icon {
+  display: block;
+}
+
+.header__cta {
+  display: none; /* Mobile: macet navbar has no CTA (<768) */
+}
+
+.nav {
+  position: absolute;
+  inset-inline: 0;
+  top: 100%;
+  display: none; /* closed by default; JS toggles .is-open in Stage 4 */
+  padding: var(--space-16) var(--container-pad);
+  background-color: var(--color-background);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.header.is-open .nav {
+  display: block;
+}
+
+.nav__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.nav__link {
+  font-size: var(--fs-text-regular);
+  color: var(--color-text);
+}
+
+.nav__link:hover {
+  text-decoration: underline;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Hero — base (Mobile): light bg, text left, bouquet top-right corner
+   ════════════════════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  min-height: var(--hero-min-h);
+  background: var(--gradient-hero);
+}
+
+/* Light scrim over the photo's left so the text stays legible — mirrors the
+   macet's gradient layer above the hero image. */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    var(--color-background) 0%,
+    var(--color-background) 40%,
+    rgba(255, 255, 255, 0) 75%
+  );
+}
+
+.hero__container {
+  position: relative;
+  z-index: 2; /* text above the image + scrim */
+}
+
+.hero__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: var(--hero-text-max);
+  padding-block: var(--hero-py);
+}
+
+.hero__title {
+  font-family: var(--font-heading);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-heading);
+  margin-bottom: var(--space-24);
+}
+
+.hero__text {
+  font-size: var(--fs-text-medium);
+  margin-bottom: var(--space-32);
+}
+
+.hero__cta {
+  align-self: stretch; /* Mobile: full-width pill (get_code: Actions w-full) */
+}
+
+.hero__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 53% center; /* full photo: white-left under text, bouquet right (macet region) */
+  z-index: 0;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Sections — base (shared visuals; desktop layout in @media 1440)
+   Portion A: About · Top-Selling · Bouquets. mobile/tablet layout TBD.
+   ════════════════════════════════════════════════════════════ */
+.about,
+.bestsellers,
+.bouquets,
+.feedback,
+.contacts {
+  padding-block: var(--section-pad-y); /* adaptive 64 → 92 */
+}
+
+/* Section headings — size via adaptive --fs-h2 (34 → 48 at desktop) */
+.about__title,
+.bestsellers__title,
+.bouquets__title,
+.feedback__title,
+.contacts__title {
+  font-family: var(--font-heading);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-heading);
+  color: var(--color-text);
+}
+
+/* ── About ──────────────────────────────────────────────── */
+.about__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-24);
+}
+
+.about__text {
+  font-size: var(--fs-text-medium);
+  color: var(--color-text);
+}
+
+.about__image {
+  border-radius: var(--radius-large);
+  object-fit: cover;
+}
+
+/* ── Product card (shared: Bestsellers + Bouquets) ───────── */
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card__image {
+  width: 100%;
+  border-radius: var(--radius-medium);
+  object-fit: cover;
+}
+
+.card__title {
+  margin-top: var(--space-16);
+  font-size: var(--fs-text-medium);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text);
+}
+
+.card__price {
+  margin-top: var(--space-8);
+  font-size: var(--fs-text-large);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text);
+}
+
+/* Bouquets cards centre their text; Top-Selling cards stay left */
+.bouquets__list .card {
+  text-align: center;
+}
+
+/* ── Bouquets title block (centred) ──────────────────────── */
+.bouquets__title,
+.bouquets__subtitle {
+  text-align: center;
+}
+
+.bouquets__subtitle {
+  font-size: var(--fs-text-medium);
+  color: var(--color-text);
+}
+
+/* ── Slider controls (shared arrow buttons) — visual only;
+      dots + mechanics are Stage 4 ──────────────────────────── */
+.slider-controls {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-16);
+}
+
+.slider-controls__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  padding: 0;
+  color: var(--color-text);
+  background-color: var(--color-foreground);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Sections — base, Portion B: Feedbacks · Contacts · Footer
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Feedbacks (testimonial cards) ──────────────────────── */
+.feedback__title {
+  text-align: center;
+}
+
+.testimonial__figure {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--space-32);
+  background-color: var(--color-foreground);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-medium);
+}
+
+.testimonial__quote {
+  font-size: var(--fs-text-medium);
+  color: var(--color-text);
+}
+
+.testimonial__author {
+  font-size: var(--fs-text-regular);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text);
+}
+
+/* ── Contacts ───────────────────────────────────────────── */
+.contacts__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.contacts__eyebrow {
+  font-size: var(--fs-text-regular);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text);
+}
+
+.contacts__title {
+  margin-top: var(--space-16); /* gap from eyebrow */
+}
+
+.contacts__text {
+  margin-top: var(--space-24); /* gap from heading */
+  font-size: var(--fs-text-medium);
+  color: var(--color-text);
+}
+
+.contacts__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+/* contact item = icon (col 1) + label/value stacked (col 2) */
+.contacts__item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--space-16);
+  row-gap: var(--space-8);
+  align-items: start;
+}
+
+.contacts__icon {
+  grid-column: 1;
+  grid-row: 1;
+  color: var(--color-text);
+}
+
+.contacts__label {
+  grid-column: 2;
+  grid-row: 1;
+  font-family: var(--font-heading);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-eyebrow); /* 18 — display/Mobile/xs */
+  line-height: var(--lh-heading-tight);
+  letter-spacing: var(--ls-heading);
+  color: var(--color-text);
+}
+
+.contacts__link,
+.contacts__address {
+  grid-column: 2;
+  grid-row: 2;
+  font-size: var(--fs-text-regular);
+  color: var(--color-text);
+}
+
+.contacts__link {
+  text-decoration: underline; /* macet: phone is an underlined link */
+}
+
+.contacts__image {
+  border-radius: var(--radius-large);
+  object-fit: cover;
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.footer {
+  padding-block: var(--section-padding-medium); /* 80 (not 92) */
+  background-color: var(--color-accent-surface); /* light yellow */
+}
+
+.footer__link {
+  font-size: var(--fs-text-regular);
+}
+
+.socials__link {
+  display: inline-flex;
+  color: var(--color-text);
+}
+
+.footer__copyright {
+  font-size: var(--fs-text-small);
+  color: var(--color-text);
+}
+
+/* ── Tablet ≥ 768px ───────────────────────────────────────── */
+@media (min-width: 768px) {
+  :root {
+    --container-pad: 32px; /* 768 − 2×32 = 704 container */
+    --hero-min-h: 669px; /* Tablet/Desktop Header frame h669 */
+    --hero-text-max: 340px; /* text column (get_code: Content 340) */
+    /* Headings unchanged: Tablet shares the Mobile display scale (36/34/32). */
+  }
+
+  /* Header — Tablet: logo + CTA + burger (inline nav only ≥1440) */
+  .header__cta {
+    display: inline-flex;
+    margin-left: auto;
+    padding: var(--btn-py-sm) var(--btn-px-sm);
+  }
+
+  .burger {
+    margin-left: 0; /* CTA takes the auto-margin; burger sits right after it */
+  }
+
+  /* Hero — Tablet: natural-width CTA; reframe the full-cover photo */
+  .hero__cta {
+    align-self: flex-start; /* natural-width pill from Tablet up */
+  }
+
+  .hero__image {
+    object-position: 60% center;
+  }
+}
+
+/* ── Desktop ≥ 1440px ─────────────────────────────────────── */
+@media (min-width: 1440px) {
+  :root {
+    --container-pad: 80px; /* 1440 − 2×80 = 1280 container */
+    --section-pad-y: 92px; /* Section Padding/padding-section-large */
+    --hero-py: var(--section-padding-medium); /* hero vertical padding 80 */
+    --hero-text-max: 667px; /* text column (get_code: Container 667) */
+    --fs-h1: 3.5rem; /* 56px — display/Desktop/xxl */
+    --fs-h2: 3rem; /* 48px — display/Desktop/xl */
+  }
+
+  /* Header — Desktop: inline nav centered, CTA right, no burger */
+  .header__container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--nav-gap);
+  }
+
+  .logo {
+    justify-self: start;
+  }
+
+  .nav {
+    position: static;
+    display: block;
+    justify-self: center;
+    padding: 0;
+    background: none;
+    border-top: 0;
+  }
+
+  .nav__list {
+    flex-direction: row;
+    gap: var(--nav-gap);
+  }
+
+  .header__cta {
+    justify-self: end;
+    margin-left: 0;
+  }
+
+  .burger {
+    display: none;
+  }
+
+  /* Hero — Desktop: full-cover photo, bouquet right of the text column */
+  .hero__image {
+    object-position: 50% center;
+  }
+
+  /* ── About — desktop: two equal columns (text + photo) ──── */
+  .about__container {
+    display: flex;
+    align-items: center;
+    gap: var(--space-80);
+  }
+
+  .about__content {
+    flex: 1;
+  }
+
+  .about__image {
+    flex: 1;
+    height: var(--about-img-h);
+  }
+
+  /* ── Top-Selling — desktop: 3-col row + centred controls ── */
+  .bestsellers__title {
+    max-width: var(--max-width-large);
+    margin-bottom: var(--space-32);
+  }
+
+  .bestsellers__list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-32);
+    margin-bottom: var(--space-48);
+  }
+
+  .bestsellers__list .card__image {
+    height: var(--bestsellers-img-h);
+  }
+
+  /* ── Bouquets — desktop: 4×2 grid + Show More ───────────── */
+  .bouquets__title {
+    margin-bottom: var(--space-8);
+  }
+
+  .bouquets__subtitle {
+    margin-bottom: var(--space-32);
+  }
+
+  .bouquets__list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: var(--space-32);
+    row-gap: var(--space-64);
+    margin-bottom: var(--space-40);
+  }
+
+  .bouquets__list .card__image {
+    height: var(--bouquets-img-h);
+  }
+
+  .bouquets__more {
+    display: flex;
+    width: var(--bouquets-more-w);
+    margin-inline: auto;
+  }
+
+  /* ── Feedbacks — desktop: 3-card row + right-aligned arrows ─ */
+  .feedback__title {
+    margin-bottom: var(--space-32);
+  }
+
+  .feedback__list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-32);
+    margin-bottom: var(--space-32);
+  }
+
+  .testimonial__figure {
+    height: var(--testimonial-h);
+  }
+
+  .feedback .slider-controls {
+    justify-content: flex-end; /* arrows bottom-right (not centred) */
+  }
+
+  /* ── Contacts — desktop: two columns + full-width photo ──── */
+  .contacts__header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-80);
+    margin-bottom: var(--space-32);
+  }
+
+  .contacts__intro {
+    flex: 1;
+  }
+
+  .contacts__details {
+    width: var(--contacts-details-w);
+    padding-block: var(--space-8);
+  }
+
+  .contacts__image {
+    width: 100%;
+    height: var(--contacts-img-h);
+  }
+
+  /* ── Footer — desktop: logo / nav / socials row + credits ── */
+  .footer__container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    column-gap: var(--space-32);
+  }
+
+  .footer__logo {
+    justify-self: start;
+  }
+
+  .footer__logo .logo__image {
+    height: var(--footer-logo-h);
+  }
+
+  .footer__nav {
+    justify-self: center;
+  }
+
+  .footer__list {
+    display: flex;
+    gap: var(--space-32);
+  }
+
+  .footer__socials {
+    display: flex;
+    justify-self: end;
+    gap: var(--space-12);
+  }
+
+  .footer__copyright {
+    grid-column: 1 / -1;
+    margin-top: var(--space-80);
+    padding-top: var(--space-32);
+    border-top: var(--divider-width) solid var(--color-divider);
+    text-align: center;
+  }
+}
