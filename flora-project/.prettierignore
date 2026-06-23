@@ -1,5 +1,3 @@
-node_modules
-dist
-src/img
-src/icons
-public
+# Binary / reference assets — not source for Prettier to format.
+images/
+design-refs/
