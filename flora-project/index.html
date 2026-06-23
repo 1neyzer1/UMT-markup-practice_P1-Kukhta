@@ -37,6 +37,7 @@
       <symbol id="icon-arrow-left" viewBox="0 0 48 48"><path d="M24.7071 29.293L20.4141 25H30.0001V23H20.4141L24.7071 18.707L23.2931 17.293L16.5861 24L23.2931 30.707L24.7071 29.293Z" fill="currentColor"/></symbol>
       <symbol id="icon-arrow-right" viewBox="0 0 48 48"><path d="M23.293 29.293L24.707 30.707L31.414 24L24.707 17.293L23.293 18.707L27.586 23H18V25H27.586L23.293 29.293Z" fill="currentColor"/></symbol>
       <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 6H20V8H4V6ZM4 11H20V13H4V11ZM4 16H20V18H4V16Z" fill="currentColor"/></symbol>
+      <symbol id="icon-star" viewBox="0 0 20 19"><path d="M9.07088 0.612343C9.41462 -0.204115 10.5854 -0.204114 10.9291 0.612346L12.9579 5.43123C13.1029 5.77543 13.4306 6.01061 13.8067 6.0404L19.0727 6.45748C19.9649 6.52814 20.3267 7.62813 19.6469 8.2034L15.6348 11.5987C15.3482 11.8412 15.223 12.2218 15.3106 12.5843L16.5363 17.661C16.744 18.5211 15.7969 19.201 15.033 18.7401L10.5245 16.0196C10.2025 15.8252 9.7975 15.8252 9.47548 16.0196L4.96699 18.7401C4.20311 19.201 3.25596 18.5211 3.46363 17.661L4.68942 12.5843C4.77698 12.2218 4.65182 11.8412 4.36526 11.5987L0.353062 8.2034C-0.326718 7.62813 0.0350679 6.52814 0.927291 6.45748L6.19336 6.0404C6.5695 6.01061 6.89716 5.77543 7.04207 5.43123L9.07088 0.612343Z" fill="currentColor"/></symbol>
     </svg>
 
     <header class="header">
@@ -156,97 +157,118 @@
         class="bestsellers"
         id="bestsellers"
         aria-labelledby="bestsellers-title"
+        aria-roledescription="carousel"
+        data-slider
       >
         <div class="container">
           <h2 class="bestsellers__title" id="bestsellers-title">
             Top-Selling Bouquets
           </h2>
 
-          <ul class="products bestsellers__list">
-            <li class="card">
-              <img
-                class="card__image"
-                src="./images/bestseller-1.jpg"
-                srcset="
-                  ./images/bestseller-1.jpg    1x,
-                  ./images/bestseller-1@2x.jpg 2x
-                "
-                width="405"
-                height="270"
-                loading="lazy"
-                decoding="async"
-                alt="Spring Elegance bouquet"
-              />
-              <h3 class="card__title">Spring Elegance</h3>
-              <p class="card__price">$35</p>
-            </li>
-            <li class="card">
-              <img
-                class="card__image"
-                src="./images/bestseller-2.jpg"
-                srcset="
-                  ./images/bestseller-2.jpg    1x,
-                  ./images/bestseller-2@2x.jpg 2x
-                "
-                width="405"
-                height="270"
-                loading="lazy"
-                decoding="async"
-                alt="Berry Chic bouquet"
-              />
-              <h3 class="card__title">Berry Chic</h3>
-              <p class="card__price">$40</p>
-            </li>
-            <li class="card">
-              <img
-                class="card__image"
-                src="./images/bestseller-3.jpg"
-                srcset="
-                  ./images/bestseller-3.jpg    1x,
-                  ./images/bestseller-3@2x.jpg 2x
-                "
-                width="405"
-                height="374"
-                loading="lazy"
-                decoding="async"
-                alt="Lavender Dream bouquet"
-              />
-              <h3 class="card__title">Lavender Dream</h3>
-              <p class="card__price">$55</p>
-            </li>
-          </ul>
+          <div class="slider__viewport">
+            <ul class="products bestsellers__list slider__track">
+              <li
+                class="card slider__slide"
+                aria-roledescription="slide"
+                aria-label="1 of 3"
+              >
+                <img
+                  class="card__image"
+                  src="./images/bestseller-1.jpg"
+                  srcset="
+                    ./images/bestseller-1.jpg    1x,
+                    ./images/bestseller-1@2x.jpg 2x
+                  "
+                  width="405"
+                  height="270"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Spring Elegance bouquet"
+                />
+                <h3 class="card__title">Spring Elegance</h3>
+                <p class="card__price">$35</p>
+              </li>
+              <li
+                class="card slider__slide"
+                aria-roledescription="slide"
+                aria-label="2 of 3"
+              >
+                <img
+                  class="card__image"
+                  src="./images/bestseller-2.jpg"
+                  srcset="
+                    ./images/bestseller-2.jpg    1x,
+                    ./images/bestseller-2@2x.jpg 2x
+                  "
+                  width="405"
+                  height="270"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Berry Chic bouquet"
+                />
+                <h3 class="card__title">Berry Chic</h3>
+                <p class="card__price">$40</p>
+              </li>
+              <li
+                class="card slider__slide"
+                aria-roledescription="slide"
+                aria-label="3 of 3"
+              >
+                <img
+                  class="card__image"
+                  src="./images/bestseller-3.jpg"
+                  srcset="
+                    ./images/bestseller-3.jpg    1x,
+                    ./images/bestseller-3@2x.jpg 2x
+                  "
+                  width="405"
+                  height="374"
+                  loading="lazy"
+                  decoding="async"
+                  alt="Lavender Dream bouquet"
+                />
+                <h3 class="card__title">Lavender Dream</h3>
+                <p class="card__price">$55</p>
+              </li>
+            </ul>
+          </div>
 
           <div class="slider-controls">
-            <button
-              class="slider-controls__button"
-              type="button"
-              aria-label="Previous bouquets"
-            >
-              <svg
-                class="icon"
-                width="48"
-                height="48"
-                aria-hidden="true"
-                focusable="false"
+            <div class="slider-dots"></div>
+            <div class="slider-controls__arrows">
+              <button
+                class="slider-controls__button"
+                type="button"
+                data-dir="prev"
+                aria-label="Previous bouquets"
               >
-                <use href="#icon-arrow-left"></use>
-              </svg>
-            </button>
-            <button
-              class="slider-controls__button"
-              type="button"
-              aria-label="Next bouquets"
-            >
-              <svg
-                class="icon"
-                width="48"
-                height="48"
-                aria-hidden="true"
-                focusable="false"
+                <svg
+                  class="icon"
+                  width="48"
+                  height="48"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <use href="#icon-arrow-left"></use>
+                </svg>
+              </button>
+              <button
+                class="slider-controls__button"
+                type="button"
+                data-dir="next"
+                aria-label="Next bouquets"
               >
-                <use href="#icon-arrow-right"></use>
-              </svg>
-            </button>
+                <svg
+                  class="icon"
+                  width="48"
+                  height="48"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <use href="#icon-arrow-right"></use>
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -403,78 +425,186 @@
       </section>
 
       <!-- Feedbacks -->
-      <section class="feedback" id="feedback" aria-labelledby="feedback-title">
+      <section
+        class="feedback"
+        id="feedback"
+        aria-labelledby="feedback-title"
+        aria-roledescription="carousel"
+        data-slider
+      >
         <div class="container">
           <h2 class="feedback__title" id="feedback-title">
             What our clients says
           </h2>
 
-          <ul class="feedback__list">
-            <li class="testimonial">
-              <figure class="testimonial__figure">
-                <blockquote class="testimonial__quote">
-                  <p>
-                    Flora made my anniversary unforgettable with their beautiful
-                    arrangement!
-                  </p>
-                </blockquote>
-                <figcaption class="testimonial__author">Emma T.</figcaption>
-              </figure>
-            </li>
-            <li class="testimonial">
-              <figure class="testimonial__figure">
-                <blockquote class="testimonial__quote">
-                  <p>
-                    Absolutely stunning bouquet! It looked even better than the
-                    photo and arrived right on time.
-                  </p>
-                </blockquote>
-                <figcaption class="testimonial__author">Daniel R.</figcaption>
-              </figure>
-            </li>
-            <li class="testimonial">
-              <figure class="testimonial__figure">
-                <blockquote class="testimonial__quote">
-                  <p>
-                    The service was exceptional, and the flowers were fresh!
-                  </p>
-                </blockquote>
-                <figcaption class="testimonial__author">Olivia M.</figcaption>
-              </figure>
-            </li>
-          </ul>
+          <div class="slider__viewport">
+            <ul class="feedback__list slider__track">
+              <li
+                class="testimonial slider__slide"
+                aria-roledescription="slide"
+                aria-label="1 of 6"
+              >
+                <figure class="testimonial__figure">
+                  <blockquote class="testimonial__quote">
+                    <p>
+                      Flora made my anniversary unforgettable with their
+                      beautiful arrangement!
+                    </p>
+                  </blockquote>
+                  <figcaption class="testimonial__author">Emma T.</figcaption>
+                </figure>
+              </li>
+              <li
+                class="testimonial slider__slide"
+                aria-roledescription="slide"
+                aria-label="2 of 6"
+              >
+                <figure class="testimonial__figure">
+                  <blockquote class="testimonial__quote">
+                    <p>
+                      Absolutely stunning bouquet! It looked even better than
+                      the photo and arrived right on time.
+                    </p>
+                  </blockquote>
+                  <figcaption class="testimonial__author">Daniel R.</figcaption>
+                </figure>
+              </li>
+              <li
+                class="testimonial slider__slide"
+                aria-roledescription="slide"
+                aria-label="3 of 6"
+              >
+                <figure class="testimonial__figure">
+                  <blockquote class="testimonial__quote">
+                    <p>
+                      The service was exceptional, and the flowers were fresh!
+                    </p>
+                  </blockquote>
+                  <figcaption class="testimonial__author">Olivia M.</figcaption>
+                </figure>
+              </li>
+              <li
+                class="testimonial slider__slide"
+                aria-roledescription="slide"
+                aria-label="4 of 6"
+              >
+                <figure class="testimonial__figure">
+                  <div class="testimonial__body">
+                    <div
+                      class="testimonial__rating"
+                      role="img"
+                      aria-label="Rated 5 out of 5 stars"
+                    >
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                    </div>
+                    <blockquote class="testimonial__quote">
+                      <p>
+                        Ordered a last-minute gift and was amazed by how fast
+                        and professional the delivery was. Highly recommend!
+                      </p>
+                    </blockquote>
+                  </div>
+                  <figcaption class="testimonial__author">Julia K.</figcaption>
+                </figure>
+              </li>
+              <li
+                class="testimonial slider__slide"
+                aria-roledescription="slide"
+                aria-label="5 of 6"
+              >
+                <figure class="testimonial__figure">
+                  <div class="testimonial__body">
+                    <div
+                      class="testimonial__rating"
+                      role="img"
+                      aria-label="Rated 5 out of 5 stars"
+                    >
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                    </div>
+                    <blockquote class="testimonial__quote">
+                      <p>
+                        Every flower was perfect. You can feel the care and love
+                        in every bouquet.
+                      </p>
+                    </blockquote>
+                  </div>
+                  <figcaption class="testimonial__author">Mark S.</figcaption>
+                </figure>
+              </li>
+              <li
+                class="testimonial slider__slide"
+                aria-roledescription="slide"
+                aria-label="6 of 6"
+              >
+                <figure class="testimonial__figure">
+                  <div class="testimonial__body">
+                    <div
+                      class="testimonial__rating"
+                      role="img"
+                      aria-label="Rated 5 out of 5 stars"
+                    >
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                      <svg class="star" width="20" height="19" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+                    </div>
+                    <blockquote class="testimonial__quote">
+                      <p>
+                        Flora helped make my friend’s birthday extra special.
+                        She was blown away by the flowers!
+                      </p>
+                    </blockquote>
+                  </div>
+                  <figcaption class="testimonial__author">Natalie V.</figcaption>
+                </figure>
+              </li>
+            </ul>
+          </div>
 
           <div class="slider-controls">
-            <button
-              class="slider-controls__button"
-              type="button"
-              aria-label="Previous reviews"
-            >
-              <svg
-                class="icon"
-                width="48"
-                height="48"
-                aria-hidden="true"
-                focusable="false"
+            <div class="slider-controls__arrows">
+              <button
+                class="slider-controls__button"
+                type="button"
+                data-dir="prev"
+                aria-label="Previous reviews"
               >
-                <use href="#icon-arrow-left"></use>
-              </svg>
-            </button>
-            <button
-              class="slider-controls__button"
-              type="button"
-              aria-label="Next reviews"
-            >
-              <svg
-                class="icon"
-                width="48"
-                height="48"
-                aria-hidden="true"
-                focusable="false"
+                <svg
+                  class="icon"
+                  width="48"
+                  height="48"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <use href="#icon-arrow-left"></use>
+                </svg>
+              </button>
+              <button
+                class="slider-controls__button"
+                type="button"
+                data-dir="next"
+                aria-label="Next reviews"
               >
-                <use href="#icon-arrow-right"></use>
-              </svg>
-            </button>
+                <svg
+                  class="icon"
+                  width="48"
+                  height="48"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <use href="#icon-arrow-right"></use>
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </section>

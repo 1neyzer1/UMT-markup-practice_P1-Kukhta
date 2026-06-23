@@ -78,6 +78,7 @@
   --bp-desktop: 1440px;
 
   /* ── Spacing scale (macet gaps; reused across sections) ─── */
+  --space-4: 0.25rem; /* rating star gap (macet) */
   --space-8: 0.5rem;
   --space-12: 0.75rem;
   --space-16: 1rem;
@@ -127,6 +128,7 @@
   --contacts-details-w: 500px; /* Contacts right column width */
   --contacts-img-h: 720px; /* Contacts photo height */
   --testimonial-h: 228px; /* Feedback card height */
+  --dot-size: 8px; /* slider pagination dot diameter (macet) */
   --footer-logo-h: 126px; /* Footer logo height */
 
   /* ── Radii / borders (global) ───────────────────────────── */
@@ -472,6 +474,86 @@ img {
   cursor: pointer;
 }
 
+/* ── Sliders (Stage 4): viewport + flex track + slides + dots.
+      Bestsellers & Feedbacks lists become flex tracks clipped by a
+      viewport; JS translates the track. Without JS the track wraps so
+      every card stays visible — see @media (scripting: none) below. ── */
+.slider__viewport {
+  overflow: hidden;
+}
+
+.slider__track {
+  display: flex;
+  gap: var(--space-24);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transition: transform 0.4s ease;
+  will-change: transform;
+}
+
+.slider__slide {
+  flex: 0 0 100%;
+}
+
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-8);
+}
+
+.slider-dots__dot {
+  width: var(--dot-size);
+  height: var(--dot-size);
+  padding: 0;
+  background-color: var(--color-border);
+  border: 0;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+
+.slider-dots__dot.is-active {
+  background-color: var(--color-text);
+}
+
+.slider-controls__arrows {
+  display: flex;
+  gap: var(--space-16);
+}
+
+.slider-controls__button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Bestsellers: dots row above arrows row, both centred. */
+.bestsellers .slider-controls {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-24);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slider__track {
+    transition: none;
+  }
+}
+
+/* No-JS fallback: relax the carousel into a static wrapped grid. */
+@media (scripting: none) {
+  .slider__viewport {
+    overflow: visible;
+  }
+
+  .slider__track {
+    flex-wrap: wrap;
+  }
+
+  .slider-controls {
+    display: none;
+  }
+}
+
 /* ════════════════════════════════════════════════════════════
    Sections — base, Portion B: Feedbacks · Contacts · Footer
    ════════════════════════════════════════════════════════════ */
@@ -500,6 +582,23 @@ img {
   font-size: var(--fs-text-regular);
   font-weight: var(--fw-semibold);
   color: var(--color-text);
+}
+
+/* Rating (cards 4–6): 5 stars stacked above the quote (macet) */
+.testimonial__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.testimonial__rating {
+  display: flex;
+  gap: var(--space-4);
+  color: var(--color-text);
+}
+
+.star {
+  display: block;
 }
 
 /* ── Contacts ───────────────────────────────────────────── */
@@ -604,8 +703,7 @@ img {
    1 column; Tablet (2 cols) in @media 768; Desktop (@media 1440) untouched.
    ════════════════════════════════════════════════════════════ */
 
-/* Product grids — Mobile: single column */
-.bestsellers__list,
+/* Bouquets grid — Mobile: single column (Bestsellers is a slider track) */
 .bouquets__list {
   display: grid;
   grid-template-columns: 1fr;
@@ -653,11 +751,8 @@ img {
    Sections — Mobile layout (Portion 3): Feedbacks · Contacts · Footer
    ════════════════════════════════════════════════════════════ */
 
-/* ── Feedbacks — Mobile: 1 column; card height; arrows right ── */
+/* ── Feedbacks — Mobile: slider track (1 card); card height; arrows right ── */
 .feedback__list {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-24);
   margin-bottom: var(--space-32);
 }
 
@@ -764,8 +859,7 @@ img {
     margin-top: 0; /* not stacked any more */
   }
 
-  /* Product grids — Tablet: 2 columns */
-  .bestsellers__list,
+  /* Bouquets grid — Tablet: 2 columns */
   .bouquets__list {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -774,15 +868,15 @@ img {
     margin-bottom: var(--space-48); /* cards → controls (Tablet/Desktop) */
   }
 
+  /* Sliders — Tablet: 2 cards visible (Bestsellers + Feedbacks) */
+  .slider__slide {
+    flex-basis: calc((100% - var(--space-24)) / 2);
+  }
+
   /* Show More — Tablet: fixed width, centred */
   .bouquets__more {
     width: var(--bouquets-more-w-tablet);
     margin-inline: auto;
-  }
-
-  /* Feedbacks — Tablet: 2 columns */
-  .feedback__list {
-    grid-template-columns: repeat(2, 1fr);
   }
 
   /* Contacts — Tablet: 2-col header + taller photo */
@@ -892,14 +986,20 @@ img {
   }
 
   .bestsellers__list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-32);
     margin-bottom: var(--space-48);
   }
 
   .bestsellers__list .card__image {
     height: var(--bestsellers-img-h);
+  }
+
+  /* Sliders — desktop: 3 cards visible, 32 gap (Bestsellers + Feedbacks) */
+  .slider__track {
+    gap: var(--space-32);
+  }
+
+  .slider__slide {
+    flex-basis: calc((100% - 2 * var(--space-32)) / 3);
   }
 
   /* ── Bouquets — desktop: 4×2 grid + Show More ───────────── */
@@ -935,9 +1035,6 @@ img {
   }
 
   .feedback__list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-32);
     margin-bottom: var(--space-32);
   }
 
