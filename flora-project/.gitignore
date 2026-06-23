@@ -1,5 +1,0 @@
-# Claude Code settings (personal/project config).
-# .claude/skills/ stays tracked; CLAUDE.md is ignored via your global ~/.gitignore_global.
-.claude/settings.json
-.claude/settings.local.json
-.claude/settings*.json
