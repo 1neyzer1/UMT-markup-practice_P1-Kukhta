@@ -83,7 +83,7 @@ npx json-server@1.0.0-beta.15 db.json   # ендпойнт: http://localhost:300
 
 ## 🌐 Live demo
 
-GitHub Pages —
+GitHub Pages — https://1neyzer1.github.io/UMT-markup-practice-Kukhta/#about
 
 ## 📁 Структура
 

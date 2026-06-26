@@ -184,6 +184,19 @@ body {
   transform: translateY(1px);
 }
 
+/* Keyboard focus ring — appears only on keyboard navigation (:focus-visible),
+   so the mouse/hover appearance and the macet stay untouched. WCAG 2.4.7.
+   Inputs keep their own macet border-colour focus state (outline: none). */
+:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+.checkbox__input:focus-visible ~ .checkbox__box {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
 /* ════════════════════════════════════════════════════════════
    Header — base (Mobile): logo + burger; nav is a hidden panel
    ════════════════════════════════════════════════════════════ */
@@ -356,8 +369,10 @@ body {
   background-size: cover;
 }
 
-/* Retina screens get the 2x photo */
-@media (min-resolution: 2dppx) {
+/* Retina screens get the 2x photo — but only from tablet up: at <768px CSS
+   the 1794px hero.jpg already supplies enough pixels even at 2dppx, so phones
+   avoid the much heavier hero-2x.jpg with no visible difference. */
+@media (min-resolution: 2dppx) and (min-width: 768px) {
   .hero {
     --hero-photo: url('../images/hero-2x.jpg');
   }

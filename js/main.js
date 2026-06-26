@@ -11,16 +11,47 @@
   }
 
   const desktopQuery = window.matchMedia('(min-width: 1440px)');
+  const navClose = nav.querySelector('.nav__close');
+  let lastFocused = null;
+
+  function focusable() {
+    return Array.prototype.slice.call(
+      nav.querySelectorAll(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    );
+  }
+
+  // Keep Tab focus inside the open fullscreen overlay (wrap at the ends).
+  function trapTab(event) {
+    const items = focusable();
+    if (!items.length) {
+      return;
+    }
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
 
   function isOpen() {
     return header.classList.contains('is-open');
   }
 
   function openMenu() {
+    lastFocused = document.activeElement;
     header.classList.add('is-open');
     document.documentElement.classList.add('is-menu-open');
     burger.setAttribute('aria-expanded', 'true');
     burger.setAttribute('aria-label', 'Close menu');
+    if (navClose) {
+      navClose.focus(); // move focus into the overlay
+    }
   }
 
   function closeMenu() {
@@ -28,6 +59,9 @@
     document.documentElement.classList.remove('is-menu-open');
     burger.setAttribute('aria-expanded', 'false');
     burger.setAttribute('aria-label', 'Open menu');
+    if (lastFocused && typeof lastFocused.focus === 'function') {
+      lastFocused.focus(); // return focus to the trigger
+    }
   }
 
   function toggleMenu() {
@@ -53,10 +87,15 @@
     }
   });
 
-  // 3. Escape closes the open panel.
+  // 3. Escape closes the open panel; Tab is trapped inside it while open.
   document.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape' && isOpen()) {
+    if (!isOpen()) {
+      return;
+    }
+    if (event.key === 'Escape') {
       closeMenu();
+    } else if (event.key === 'Tab') {
+      trapTab(event);
     }
   });
 
@@ -265,19 +304,52 @@
   const modal = backdrop.querySelector('.modal');
   const closeBtn = backdrop.querySelector('.modal__close');
   const root = document.documentElement;
+  let lastFocused = null;
+
+  function focusable() {
+    return Array.prototype.slice.call(
+      modal.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    );
+  }
+
+  // Keep Tab focus inside the open dialog (wrap at the ends).
+  function trapTab(event) {
+    const items = focusable();
+    if (!items.length) {
+      return;
+    }
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
 
   function isOpen() {
     return backdrop.classList.contains('is-open');
   }
 
   function openModal() {
+    lastFocused = document.activeElement;
     backdrop.classList.add('is-open');
     root.classList.add('is-menu-open'); // lock background scroll
+    if (closeBtn) {
+      closeBtn.focus(); // move focus into the dialog
+    }
   }
 
   function closeModal() {
     backdrop.classList.remove('is-open');
     root.classList.remove('is-menu-open');
+    if (lastFocused && typeof lastFocused.focus === 'function') {
+      lastFocused.focus(); // return focus to the trigger
+    }
   }
 
   // Give each static product card (bestsellers) an "Order" trigger. Dynamic
@@ -311,8 +383,13 @@
   });
 
   document.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape' && isOpen()) {
+    if (!isOpen()) {
+      return;
+    }
+    if (event.key === 'Escape') {
       closeModal();
+    } else if (event.key === 'Tab') {
+      trapTab(event);
     }
   });
 
@@ -359,6 +436,18 @@
   const API_URL = 'http://localhost:3000/bouquets';
   const FALLBACK_URL = './db.json';
   const PER_PAGE = 4;
+
+  // json-server only exists in local dev; on a static deploy (GitHub Pages)
+  // the localhost request can never answer, so skip it and read db.json.
+  const isLocal =
+    location.hostname === 'localhost' ||
+    location.hostname === '127.0.0.1' ||
+    location.protocol === 'file:';
+
+  const EMPTY_TEXT =
+    (emptyMsg && emptyMsg.textContent.trim()) ||
+    'No bouquets match this filter.';
+  const ERROR_TEXT = 'Could not load bouquets. Please try again later.';
 
   // Each price filter maps to the query params json-server understands, plus a
   // `test` so the static fallback can filter the cached array identically.
@@ -410,8 +499,18 @@
   // Show the empty-state message only when the rendered list has no cards.
   function updateEmpty() {
     if (emptyMsg) {
+      emptyMsg.textContent = EMPTY_TEXT;
       emptyMsg.hidden = list.children.length > 0;
     }
+  }
+
+  // Reuse the same message slot to report a failed load to the user.
+  function showError() {
+    if (emptyMsg) {
+      emptyMsg.textContent = ERROR_TEXT;
+      emptyMsg.hidden = false;
+    }
+    setMore(false);
   }
 
   // Query params for the current page of the active filter.
@@ -445,16 +544,17 @@
     }
 
     try {
-      // Server mode (or the first attempt): ask json-server for this page.
-      if (mode !== 'file') {
+      // Local dev only: try the live json-server for true server-side paging.
+      // On a static deploy that request can never succeed, so we skip it.
+      if (mode !== 'file' && isLocal) {
         try {
           const response = await axios.get(API_URL, { params: queryParams() });
           if (token !== loadToken) {
             return; // a newer load superseded this one
           }
           const data = response.data;
-          // json-server (beta.15) wraps paginated results: rows under .data,
-          // .next is null on the last page — that is true server-side paging.
+          // json-server (beta.15) wraps paginated results under .data; .next
+          // is null on the last page — that is true server-side paging.
           if (data && !Array.isArray(data) && Array.isArray(data.data)) {
             mode = 'server';
             appendCards(data.data);
@@ -462,27 +562,32 @@
             updateEmpty();
             return;
           }
-          // A bare array means the server did not paginate — page it ourselves.
-          mode = 'file';
+          // A bare array means the server did not paginate — fall to file mode.
         } catch (error) {
           if (token !== loadToken) {
             return;
           }
-          mode = 'file';
+          // json-server unavailable — fall through to the db.json fallback.
         }
+      }
 
-        // Entering file mode: cache the full list once from the raw file.
-        if (!pool.length) {
-          try {
-            const fallback = await axios.get(FALLBACK_URL);
-            if (token !== loadToken) {
-              return;
-            }
-            pool = fallback.data.bouquets || [];
-          } catch (fallbackError) {
-            console.error('Could not load bouquets:', fallbackError);
+      // File mode (static deploy, or json-server unavailable/non-paginating):
+      // cache db.json once, then slice the filtered pool client-side.
+      mode = 'file';
+      if (!pool.length) {
+        try {
+          const fallback = await axios.get(FALLBACK_URL);
+          if (token !== loadToken) {
             return;
           }
+          pool = fallback.data.bouquets || [];
+        } catch (fallbackError) {
+          if (token !== loadToken) {
+            return;
+          }
+          console.error('Could not load bouquets:', fallbackError);
+          showError();
+          return;
         }
       }
 
