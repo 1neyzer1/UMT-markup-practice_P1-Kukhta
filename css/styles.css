@@ -19,22 +19,17 @@
   --color-divider: #030c0126;
   --color-barberry: #e8e81c; /* Color/Barberry — CTA gradient start */
   --color-harlequin: #42ed13; /* Color/Harlequin — CTA gradient end */
+  --color-harlequin-lighter: #d9fbcf; /* Slider arrow hover bg (macet) */
   /* Color Scheme 5/Background — light yellow surface */
   --color-accent-surface: #eeee60;
+  --color-backdrop: rgba(3, 12, 1, 0.6); /* modal overlay (dark, semi-opaque) */
+  --color-placeholder: rgba(3, 12, 1, 0.6); /* input placeholder text */
 
   /* Primary button fill (CTA): barberry → harlequin gradient */
   --gradient-cta: linear-gradient(
     140.7deg,
     var(--color-barberry) 0%,
     var(--color-harlequin) 100%
-  );
-  /* Hero background — exact 4-stop from get_code */
-  --gradient-hero: linear-gradient(
-    180deg,
-    #f1f1f1 0%,
-    #f3f3f5 12.82%,
-    #f5f5f7 30.5%,
-    #fcfcfc 100%
   );
 
   /* ── Typography ─────────────────────────────────────────── */
@@ -137,54 +132,20 @@
   --radius-pill: 100px; /* CTA pill (get_code: rounded-[100px]) */
   --border-width: 1px; /* Stroke/Border Width */
   --divider-width: 1px; /* Stroke/Divider Width */
+  --radius-input: 12px; /* form input radius (macet) */
+  --radius-small: 4px; /* custom checkbox box radius */
+  --textarea-h: 180px; /* modal message textarea height (macet) */
 }
 
 /* ════════════════════════════════════════════════════════════
    Global base
    ════════════════════════════════════════════════════════════ */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-h1,
-h2,
-h3,
-h4,
-p,
-figure,
-blockquote {
-  margin: 0;
-}
-
-.nav__list,
-.footer__list,
-.products,
-.socials,
-.contacts__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 body {
   font-family: var(--font-body);
   font-size: var(--fs-text-regular);
   line-height: var(--lh-body);
   color: var(--color-text);
   background-color: var(--color-background);
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-img {
-  display: block;
-  max-width: 100%;
-  height: auto;
 }
 
 .container {
@@ -199,7 +160,6 @@ img {
   align-items: center;
   justify-content: center;
   padding: var(--btn-py) var(--btn-px);
-  font-family: var(--font-body);
   font-size: var(--fs-text-regular);
   font-weight: var(--fw-medium);
   line-height: var(--lh-body);
@@ -211,12 +171,13 @@ img {
   text-decoration: none;
   white-space: nowrap;
   transition:
-    filter 0.2s ease,
-    transform 0.2s ease;
+    opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.button:hover {
-  filter: brightness(0.96);
+.button:hover,
+.button:focus-visible {
+  opacity: 0.5; /* macet: Button/Primary/Hover */
 }
 
 .button:active {
@@ -229,6 +190,7 @@ img {
 .header {
   position: relative;
   background-color: var(--color-background);
+  border-bottom: var(--border-width) solid var(--color-border);
 }
 
 .header__container {
@@ -255,7 +217,6 @@ img {
   height: var(--tap-target);
   margin-left: auto;
   padding: 0;
-  color: var(--color-text);
   background: none;
   border: 0;
   cursor: pointer;
@@ -269,63 +230,137 @@ img {
   display: none; /* Mobile: macet navbar has no CTA (<768) */
 }
 
+/* Mobile menu — full-viewport overlay (macet open-navbar): its own top bar
+   (logo + close), the links (gap 32), then the CTA. Hidden until .is-open. */
 .nav {
-  position: absolute;
-  inset-inline: 0;
-  top: 100%;
-  display: none; /* closed by default; JS toggles .is-open in Stage 4 */
-  padding: var(--space-16) var(--container-pad);
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: none;
+  flex-direction: column;
   background-color: var(--color-background);
-  border-top: var(--border-width) solid var(--color-border);
+  overflow-y: auto;
 }
 
 .header.is-open .nav {
-  display: block;
+  display: flex;
+}
+
+.nav__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--header-height);
+  padding-inline: var(--container-pad);
+}
+
+.nav__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
 }
 
 .nav__list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  gap: var(--space-32);
+  padding: var(--space-16) var(--container-pad) 0;
 }
 
 .nav__link {
   font-size: var(--fs-text-regular);
-  color: var(--color-text);
 }
 
-.nav__link:hover {
-  text-decoration: underline;
+.nav__cta {
+  margin: var(--space-24) var(--container-pad) var(--space-32);
+}
+
+/* Lock background scroll while the full-screen menu is open */
+.is-menu-open {
+  overflow: hidden;
+}
+
+/* ── Interactive states (hover / keyboard focus) — from macet ── */
+.nav__link,
+.footer__link,
+.contacts__link,
+.socials__link,
+.logo,
+.slider-dots__dot,
+.burger,
+.nav__close,
+.slider-controls__button {
+  transition:
+    opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav__link:hover,
+.nav__link:focus-visible,
+.footer__link:hover,
+.footer__link:focus-visible,
+.contacts__link:hover,
+.contacts__link:focus-visible,
+.socials__link:hover,
+.socials__link:focus-visible,
+.logo:hover,
+.logo:focus-visible,
+.slider-dots__dot:hover,
+.slider-dots__dot:focus-visible,
+.burger:hover,
+.burger:focus-visible,
+.nav__close:hover,
+.nav__close:focus-visible {
+  opacity: 0.6; /* macet: Link/Hover */
+}
+
+.slider-controls__button:hover,
+.slider-controls__button:focus-visible {
+  background-color: var(
+    --color-harlequin-lighter
+  ); /* macet: Slider Arrow/Hover */
 }
 
 /* ════════════════════════════════════════════════════════════
-   Hero — base (Mobile): light bg, text left, bouquet top-right corner
+   Hero — base (Mobile): text left over a multi-layer background photo
    ════════════════════════════════════════════════════════════ */
+/* Hero — the large image under the header is a MULTI-LAYER background:
+   a left white scrim (top layer — keeps the dark text legible) over the
+   bouquet photo (bottom layer). Full-bleed like the macet; the photo source
+   is 1794px wide, so `cover` never upscales it on normal screens (≤1794px),
+   and the naturally-white left blends into the page on any width. */
 .hero {
+  --hero-photo: url('../images/hero.jpg');
   position: relative;
   overflow: hidden;
   min-height: var(--hero-min-h);
-  background: var(--gradient-hero);
+  background-color: var(--color-background);
+  background-image:
+    linear-gradient(
+      90deg,
+      var(--color-background) 0%,
+      var(--color-background) 40%,
+      rgba(255, 255, 255, 0) 75%
+    ),
+    var(--hero-photo);
+  background-position:
+    center,
+    53% center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
-/* Light scrim over the photo's left so the text stays legible — mirrors the
-   macet's gradient layer above the hero image. */
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(
-    90deg,
-    var(--color-background) 0%,
-    var(--color-background) 40%,
-    rgba(255, 255, 255, 0) 75%
-  );
-}
-
-.hero__container {
-  position: relative;
-  z-index: 2; /* text above the image + scrim */
+/* Retina screens get the 2x photo */
+@media (min-resolution: 2dppx) {
+  .hero {
+    --hero-photo: url('../images/hero-2x.jpg');
+  }
 }
 
 .hero__content {
@@ -354,26 +389,12 @@ img {
   align-self: stretch; /* Mobile: full-width pill (get_code: Actions w-full) */
 }
 
-.hero__image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 53% center; /* full photo: white-left under text, bouquet right (macet region) */
-  z-index: 0;
-}
-
 /* ════════════════════════════════════════════════════════════
    Sections — base (shared visuals; desktop layout in @media 1440)
    Portion A: About · Top-Selling · Bouquets. mobile/tablet layout TBD.
    ════════════════════════════════════════════════════════════ */
-.about,
-.bestsellers,
-.bouquets,
-.feedback,
-.contacts {
-  padding-block: var(--section-pad-y); /* adaptive 64 → 92 */
+.section {
+  padding-block: var(--section-pad-y); /* adaptive 64 → 92 (from macet) */
 }
 
 /* Section headings — size via adaptive --fs-h2 (34 → 48 at desktop) */
@@ -387,7 +408,6 @@ img {
   font-size: var(--fs-h2);
   line-height: var(--lh-heading);
   letter-spacing: var(--ls-heading);
-  color: var(--color-text);
 }
 
 /* ── About ──────────────────────────────────────────────── */
@@ -400,7 +420,6 @@ img {
 
 .about__text {
   font-size: var(--fs-text-medium);
-  color: var(--color-text);
 }
 
 .about__image {
@@ -426,14 +445,12 @@ img {
   margin-top: var(--space-16);
   font-size: var(--fs-text-medium);
   font-weight: var(--fw-semibold);
-  color: var(--color-text);
 }
 
 .card__price {
   margin-top: var(--space-8);
   font-size: var(--fs-text-large);
   font-weight: var(--fw-semibold);
-  color: var(--color-text);
 }
 
 /* Bouquets cards centre their text; Top-Selling cards stay left */
@@ -449,7 +466,6 @@ img {
 
 .bouquets__subtitle {
   font-size: var(--fs-text-medium);
-  color: var(--color-text);
 }
 
 /* ── Slider controls (shared arrow buttons) — visual only;
@@ -467,7 +483,6 @@ img {
   width: var(--tap-target);
   height: var(--tap-target);
   padding: 0;
-  color: var(--color-text);
   background-color: var(--color-foreground);
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-pill);
@@ -522,7 +537,7 @@ img {
 }
 
 .slider-controls__button:disabled {
-  opacity: 0.4;
+  opacity: 0.3; /* macet: Slider Arrow/Disabled */
   cursor: default;
 }
 
@@ -539,7 +554,9 @@ img {
   }
 }
 
-/* No-JS fallback: relax the carousel into a static wrapped grid. */
+/* No-JS fallback: relax the carousel into a static wrapped grid, and hide the
+   bouquets controls (filter chips + Show More) since the list is JS-rendered
+   and they would otherwise sit inert above an empty grid. */
 @media (scripting: none) {
   .slider__viewport {
     overflow: visible;
@@ -550,6 +567,11 @@ img {
   }
 
   .slider-controls {
+    display: none;
+  }
+
+  .bouquets__filters,
+  .bouquets__more {
     display: none;
   }
 }
@@ -575,13 +597,11 @@ img {
 
 .testimonial__quote {
   font-size: var(--fs-text-medium);
-  color: var(--color-text);
 }
 
 .testimonial__author {
   font-size: var(--fs-text-regular);
   font-weight: var(--fw-semibold);
-  color: var(--color-text);
 }
 
 /* Rating (cards 4–6): 5 stars stacked above the quote (macet) */
@@ -594,7 +614,6 @@ img {
 .testimonial__rating {
   display: flex;
   gap: var(--space-4);
-  color: var(--color-text);
 }
 
 .star {
@@ -611,7 +630,6 @@ img {
 .contacts__eyebrow {
   font-size: var(--fs-text-regular);
   font-weight: var(--fw-semibold);
-  color: var(--color-text);
 }
 
 .contacts__title {
@@ -621,7 +639,6 @@ img {
 .contacts__text {
   margin-top: var(--space-24); /* gap from heading */
   font-size: var(--fs-text-medium);
-  color: var(--color-text);
 }
 
 .contacts__list {
@@ -642,7 +659,6 @@ img {
 .contacts__icon {
   grid-column: 1;
   grid-row: 1;
-  color: var(--color-text);
 }
 
 .contacts__label {
@@ -653,7 +669,6 @@ img {
   font-size: var(--fs-eyebrow); /* 18 — display/Mobile/xs */
   line-height: var(--lh-heading-tight);
   letter-spacing: var(--ls-heading);
-  color: var(--color-text);
 }
 
 .contacts__link,
@@ -661,7 +676,6 @@ img {
   grid-column: 2;
   grid-row: 2;
   font-size: var(--fs-text-regular);
-  color: var(--color-text);
 }
 
 .contacts__link {
@@ -675,7 +689,9 @@ img {
 
 /* ── Footer ─────────────────────────────────────────────── */
 .footer {
-  padding-block: var(--space-48); /* 48 on Mobile/Tablet (Desktop 80 → @media 1440) */
+  padding-block: var(
+    --space-48
+  ); /* 48 on Mobile/Tablet (Desktop 80 → @media 1440) */
   background-color: var(--color-accent-surface); /* light yellow */
 }
 
@@ -685,16 +701,16 @@ img {
 
 .socials__link {
   display: inline-flex;
-  color: var(--color-text);
 }
 
 .footer__copyright {
   width: 100%;
-  margin-top: var(--space-32); /* gap to the divider (Desktop 80 → @media 1440) */
+  margin-top: var(
+    --space-32
+  ); /* gap to the divider (Desktop 80 → @media 1440) */
   padding-top: var(--space-32);
   border-top: var(--divider-width) solid var(--color-divider); /* divider line */
   font-size: var(--fs-text-small);
-  color: var(--color-text);
   text-align: center;
 }
 
@@ -734,17 +750,71 @@ img {
 }
 
 .bouquets__subtitle {
+  margin-bottom: var(--space-24);
+}
+
+/* Price filter chips — added for filtering; styled from existing tokens to
+   match the macet (white pill + border, light-green hover, gradient when
+   active), so it reads as part of Flora. */
+.bouquets__filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-12);
   margin-bottom: var(--space-32);
+}
+
+.bouquets__filter {
+  padding: var(--space-8) var(--space-24);
+  font-size: var(--fs-text-small);
+  font-weight: var(--fw-medium);
+  color: var(--color-text);
+  background-color: var(--color-foreground);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bouquets__filter:hover,
+.bouquets__filter:focus-visible {
+  background-color: var(--color-harlequin-lighter);
+}
+
+.bouquets__filter[aria-pressed='true'] {
+  background-image: var(--gradient-cta);
+  border-color: var(--color-barberry);
+}
+
+/* The active chip's opaque gradient masks the hover background-color, so dim
+   it on interaction instead (matches the .button hover convention). */
+.bouquets__filter[aria-pressed='true']:hover,
+.bouquets__filter[aria-pressed='true']:focus-visible {
+  opacity: 0.5;
 }
 
 .bouquets__list {
   margin-bottom: var(--space-40);
 }
 
+/* Empty / end-of-results message — shown by JS when a filter returns nothing
+   (no `display` here so the default [hidden] rule keeps it hidden). */
+.bouquets__empty {
+  margin-bottom: var(--space-40);
+  color: var(--color-placeholder);
+  text-align: center;
+}
+
 /* Show More — Mobile: full-width */
 .bouquets__more {
   display: flex;
   width: 100%;
+}
+
+/* The author display:flex above outranks the UA [hidden] rule, so JS toggling
+   `hidden` (last page reached) needs this to actually hide the button. */
+.bouquets__more[hidden] {
+  display: none;
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -757,7 +827,7 @@ img {
 }
 
 .testimonial__figure {
-  height: var(--testimonial-h);
+  min-height: var(--testimonial-h);
 }
 
 .feedback__title {
@@ -814,6 +884,186 @@ img {
   height: var(--space-40);
 }
 
+/* ════════════════════════════════════════════════════════════
+   Forms — order modal + footer newsletter (fields, custom checkbox)
+   ════════════════════════════════════════════════════════════ */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.field__label {
+  font-size: var(--fs-text-regular);
+}
+
+.field__input {
+  width: 100%;
+  padding: var(--btn-py-sm) var(--space-12);
+  font: inherit;
+  color: var(--color-text);
+  background-color: transparent;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-input);
+  transition: border-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.field__input::placeholder {
+  color: var(--color-placeholder);
+}
+
+.field__input:focus {
+  border-color: var(--color-text); /* macet: Text Input / Focused */
+  outline: none;
+}
+
+.field__textarea {
+  min-height: var(--textarea-h);
+  resize: vertical;
+}
+
+/* Custom checkbox — native input hidden; styled box + SVG check from sprite */
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  cursor: pointer;
+}
+
+.checkbox__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+
+.checkbox__box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--space-24);
+  height: var(--space-24);
+  color: var(--color-text);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-small);
+  transition: border-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.checkbox__check {
+  display: block;
+  opacity: 0;
+  transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.checkbox__input:checked ~ .checkbox__box .checkbox__check {
+  opacity: 1;
+}
+
+.checkbox__input:focus-visible ~ .checkbox__box {
+  border-color: var(--color-text);
+}
+
+.checkbox__text {
+  font-size: var(--fs-text-regular);
+}
+
+/* ════════════════════════════════════════════════════════════
+   Order modal + backdrop (hidden until .is-open)
+   ════════════════════════════════════════════════════════════ */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: none;
+  padding: var(--space-16);
+  background-color: var(--color-backdrop);
+  overflow-y: auto;
+}
+
+.backdrop.is-open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin-block: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+  padding: var(--space-48) var(--space-32);
+  background-color: var(--color-background);
+  border-radius: var(--radius-large);
+}
+
+.modal__close {
+  position: absolute;
+  top: var(--space-16);
+  right: var(--space-16);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  padding: 0;
+  color: var(--color-text);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.modal__title {
+  font-family: var(--font-heading);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-heading);
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.form__submit {
+  align-self: center;
+}
+
+/* ── Footer newsletter form (spans the footer's top row) ─────── */
+.footer__newsletter {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  width: 100%;
+  max-width: 480px;
+}
+
+.newsletter__controls {
+  display: flex;
+  gap: var(--space-12);
+}
+
+.newsletter__input {
+  flex: 1;
+  min-width: 0;
+  background-color: var(--color-background);
+}
+
+/* ── Order trigger button injected into product cards by JS ──── */
+.card__order {
+  width: 100%;
+  margin-top: var(--space-12);
+  padding: var(--btn-py-sm) var(--btn-px-sm);
+}
+
 /* ── Tablet ≥ 768px ───────────────────────────────────────── */
 @media (min-width: 768px) {
   :root {
@@ -839,8 +1089,10 @@ img {
     align-self: flex-start; /* natural-width pill from Tablet up */
   }
 
-  .hero__image {
-    object-position: 60% center;
+  .hero {
+    background-position:
+      center,
+      60% center;
   }
 
   /* About — Tablet: two columns (text + photo), gap 24 */
@@ -900,7 +1152,6 @@ img {
   /* Footer — Tablet: horizontal links, smaller social icons */
   .footer__list {
     flex-direction: row;
-    gap: var(--space-32);
   }
 
   .footer__socials {
@@ -944,9 +1195,15 @@ img {
     border-top: 0;
   }
 
+  .nav__bar,
+  .nav__cta {
+    display: none; /* overlay-only chrome; desktop nav is the inline links */
+  }
+
   .nav__list {
     flex-direction: row;
     gap: var(--nav-gap);
+    padding: 0;
   }
 
   .header__cta {
@@ -959,8 +1216,10 @@ img {
   }
 
   /* Hero — Desktop: full-cover photo, bouquet right of the text column */
-  .hero__image {
-    object-position: 50% center;
+  .hero {
+    background-position:
+      center,
+      50% center;
   }
 
   /* ── About — desktop: two equal columns (text + photo) ──── */
@@ -976,21 +1235,15 @@ img {
 
   .about__image {
     flex: 1;
-    height: var(--about-img-h);
   }
 
   /* ── Top-Selling — desktop: 3-col row + centred controls ── */
   .bestsellers__title {
     max-width: var(--max-width-large);
-    margin-bottom: var(--space-32);
   }
 
   .bestsellers__list {
     margin-bottom: var(--space-48);
-  }
-
-  .bestsellers__list .card__image {
-    height: var(--bestsellers-img-h);
   }
 
   /* Sliders — desktop: 3 cards visible, 32 gap (Bestsellers + Feedbacks) */
@@ -1003,55 +1256,22 @@ img {
   }
 
   /* ── Bouquets — desktop: 4×2 grid + Show More ───────────── */
-  .bouquets__title {
-    margin-bottom: var(--space-8);
-  }
-
-  .bouquets__subtitle {
-    margin-bottom: var(--space-32);
-  }
-
   .bouquets__list {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     column-gap: var(--space-32);
     row-gap: var(--space-64);
-    margin-bottom: var(--space-40);
-  }
-
-  .bouquets__list .card__image {
-    height: var(--bouquets-img-h);
   }
 
   .bouquets__more {
-    display: flex;
     width: var(--bouquets-more-w);
     margin-inline: auto;
   }
 
-  /* ── Feedbacks — desktop: 3-card row + right-aligned arrows ─ */
-  .feedback__title {
-    margin-bottom: var(--space-32);
-  }
-
-  .feedback__list {
-    margin-bottom: var(--space-32);
-  }
-
-  .testimonial__figure {
-    height: var(--testimonial-h);
-  }
-
-  .feedback .slider-controls {
-    justify-content: flex-end; /* arrows bottom-right (not centred) */
-  }
-
   /* ── Contacts — desktop: two columns + full-width photo ──── */
   .contacts__header {
-    display: flex;
     align-items: flex-start;
     gap: var(--space-80);
-    margin-bottom: var(--space-32);
   }
 
   .contacts__intro {
@@ -1064,7 +1284,6 @@ img {
   }
 
   .contacts__image {
-    width: 100%;
     height: var(--contacts-img-h);
   }
 
@@ -1076,7 +1295,6 @@ img {
   .footer__container {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
-    align-items: center;
     column-gap: var(--space-32);
   }
 
@@ -1084,32 +1302,18 @@ img {
     justify-self: start;
   }
 
-  .footer__logo .logo__image {
-    height: var(--footer-logo-h);
-  }
-
   .footer__nav {
     justify-self: center;
     margin-top: 0; /* reset Mobile stack margin for the grid row */
   }
 
-  .footer__list {
-    display: flex;
-    gap: var(--space-32);
-  }
-
   .footer__socials {
-    display: flex;
     justify-self: end;
-    gap: var(--space-12);
     margin-top: 0; /* reset Mobile stack margin for the grid row */
   }
 
   .footer__copyright {
     grid-column: 1 / -1;
     margin-top: var(--space-80);
-    padding-top: var(--space-32);
-    border-top: var(--divider-width) solid var(--color-divider);
-    text-align: center;
   }
 }
