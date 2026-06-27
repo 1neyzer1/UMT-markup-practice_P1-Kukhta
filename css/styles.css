@@ -125,6 +125,8 @@
   --testimonial-h: 228px; /* Feedback card height */
   --dot-size: 8px; /* slider pagination dot diameter (macet) */
   --footer-logo-h: 126px; /* Footer logo height */
+  --product-modal-w: 900px; /* product modal width (desktop, 2-col) */
+  --qty-w: 64px; /* product modal quantity input width */
 
   /* ── Radii / borders (global) ───────────────────────────── */
   --radius-medium: 16px; /* Radius/Medium */
@@ -446,8 +448,26 @@ body {
 
 /* ── Product card (shared: Bestsellers + Bouquets) ───────── */
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
+}
+
+/* The bouquet title is a button whose stretched ::after makes the whole card
+   open the product modal — keeps the <h3> a real heading and valid markup. */
+.card__button {
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.card__button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
 }
 
 .card__image {
@@ -617,22 +637,6 @@ body {
 .testimonial__author {
   font-size: var(--fs-text-regular);
   font-weight: var(--fw-semibold);
-}
-
-/* Rating (cards 4–6): 5 stars stacked above the quote (macet) */
-.testimonial__body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-24);
-}
-
-.testimonial__rating {
-  display: flex;
-  gap: var(--space-4);
-}
-
-.star {
-  display: block;
 }
 
 /* ── Contacts ───────────────────────────────────────────── */
@@ -1041,6 +1045,52 @@ body {
   text-align: center;
 }
 
+/* ── Product modal (bouquet details) — reuses .backdrop / .modal ── */
+.product__image {
+  width: 100%;
+  border-radius: var(--radius-medium);
+}
+
+.product__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.product__title {
+  text-align: left;
+}
+
+/* Price in a bordered box (mirrors the .field__input border treatment) */
+.product__price {
+  align-self: flex-start;
+  padding: var(--btn-py-sm) var(--space-12);
+  font-size: var(--fs-text-large);
+  font-weight: var(--fw-semibold);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-input);
+}
+
+.product__description {
+  font-size: var(--fs-text-small);
+}
+
+.product__actions {
+  display: flex;
+  gap: var(--space-12);
+  align-items: center;
+  margin-top: var(--space-8);
+}
+
+.product__buy {
+  flex: 1;
+}
+
+.product__qty {
+  width: var(--qty-w);
+  text-align: center;
+}
+
 .form {
   display: flex;
   flex-direction: column;
@@ -1070,13 +1120,6 @@ body {
   flex: 1;
   min-width: 0;
   background-color: var(--color-background);
-}
-
-/* ── Order trigger button injected into product cards by JS ──── */
-.card__order {
-  width: 100%;
-  margin-top: var(--space-12);
-  padding: var(--btn-py-sm) var(--btn-px-sm);
 }
 
 /* ── Tablet ≥ 768px ───────────────────────────────────────── */
@@ -1188,6 +1231,19 @@ body {
     --hero-text-max: 667px; /* text column (get_code: Container 667) */
     --fs-h1: 3.5rem; /* 56px — display/Desktop/xxl */
     --fs-h2: 3rem; /* 48px — display/Desktop/xl */
+  }
+
+  /* Product modal — Desktop: image left, details right */
+  .product {
+    max-width: var(--product-modal-w);
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-48);
+  }
+
+  .product__media,
+  .product__body {
+    flex: 1;
   }
 
   /* Header — Desktop: inline nav centered, CTA right, no burger */

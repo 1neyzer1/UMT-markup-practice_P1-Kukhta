@@ -347,26 +347,21 @@
   function closeModal() {
     backdrop.classList.remove('is-open');
     root.classList.remove('is-menu-open');
-    if (lastFocused && typeof lastFocused.focus === 'function') {
+    // Skip if the trigger is now hidden (e.g. the product modal's Buy now,
+    // hidden during the handoff) — avoids focusing a hidden element.
+    if (
+      lastFocused &&
+      typeof lastFocused.focus === 'function' &&
+      lastFocused.offsetParent !== null
+    ) {
       lastFocused.focus(); // return focus to the trigger
     }
   }
 
-  // Give each static product card (bestsellers) an "Order" trigger. Dynamic
-  // bouquet cards ship their own button straight from the render template.
-  document
-    .querySelectorAll('.bestsellers__list .card')
-    .forEach(function (card) {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'button card__order';
-      button.textContent = 'Order';
-      card.appendChild(button);
-    });
-
-  // Delegated: any "Order" button (static or dynamically rendered) opens it.
+  // Delegated: the product modal's "Buy now" (any [data-open="order"]) opens
+  // the order form.
   document.addEventListener('click', function (event) {
-    if (event.target.closest('.card__order')) {
+    if (event.target.closest('[data-open="order"]')) {
       openModal();
     }
   });
@@ -410,6 +405,133 @@
       newsletter.reset();
     });
   }
+})();
+
+// Product modal — clicking a bouquet card opens a details modal (image, name,
+// price, description) built from the card's data-* attributes. Its "Buy now"
+// button hands off to the order form modal (which opens on [data-open="order"]),
+// leaving the scroll-lock continuously on so there is no flash.
+(function initProductModal() {
+  const backdrop = document.querySelector('#product-modal');
+  if (!backdrop) {
+    return;
+  }
+
+  const modal = backdrop.querySelector('.modal');
+  const closeBtn = backdrop.querySelector('.modal__close');
+  const img = backdrop.querySelector('.product__image');
+  const titleEl = backdrop.querySelector('.product__title');
+  const priceEl = backdrop.querySelector('.product__price');
+  const descEl = backdrop.querySelector('.product__description');
+  const qtyEl = backdrop.querySelector('.product__qty');
+  const root = document.documentElement;
+  let lastFocused = null;
+
+  function focusable() {
+    return Array.prototype.slice.call(
+      modal.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    );
+  }
+
+  function trapTab(event) {
+    const items = focusable();
+    if (!items.length) {
+      return;
+    }
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function isOpen() {
+    return backdrop.classList.contains('is-open');
+  }
+
+  function populate(data) {
+    img.src = data.image;
+    img.srcset = data.image + ' 1x, ' + data.image2x + ' 2x';
+    img.width = data.width;
+    img.height = data.height;
+    img.alt = data.alt;
+    titleEl.textContent = data.name;
+    priceEl.textContent = '$' + data.price;
+    descEl.textContent = data.description || '';
+    if (qtyEl) {
+      qtyEl.value = '1';
+    }
+  }
+
+  function openModal() {
+    lastFocused = document.activeElement;
+    backdrop.classList.add('is-open');
+    root.classList.add('is-menu-open'); // lock background scroll
+    if (closeBtn) {
+      closeBtn.focus();
+    }
+  }
+
+  // Full close (X / backdrop / Escape): drop the lock and restore focus.
+  function closeModal() {
+    backdrop.classList.remove('is-open');
+    root.classList.remove('is-menu-open');
+    if (lastFocused && typeof lastFocused.focus === 'function') {
+      lastFocused.focus();
+    }
+  }
+
+  // Handoff close (Buy now): hide this modal but leave the scroll-lock and
+  // focus to the order modal opening on the same click — no lock on/off race.
+  function closeForHandoff() {
+    backdrop.classList.remove('is-open');
+  }
+
+  // Open from a bouquet card.
+  document.addEventListener('click', function (event) {
+    const trigger = event.target.closest('.card__button');
+    if (!trigger) {
+      return;
+    }
+    populate(trigger.dataset);
+    openModal();
+  });
+
+  // Buy now → hand off to the order modal.
+  if (modal) {
+    modal.addEventListener('click', function (event) {
+      if (event.target.closest('[data-open="order"]')) {
+        closeForHandoff();
+      }
+    });
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeModal);
+  }
+
+  backdrop.addEventListener('click', function (event) {
+    if (!modal.contains(event.target)) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (!isOpen()) {
+      return;
+    }
+    if (event.key === 'Escape') {
+      closeModal();
+    } else if (event.key === 'Tab') {
+      trapTab(event);
+    }
+  });
 })();
 
 // Dynamic bouquets — the gallery has NO static markup; every card is built
@@ -480,9 +602,23 @@
           decoding="async"
           alt="${item.alt}"
         />
-        <h3 class="card__title">${item.name}</h3>
+        <h3 class="card__title">
+          <button
+            class="card__button"
+            type="button"
+            data-name="${item.name}"
+            data-price="${item.price}"
+            data-description="${item.description || ''}"
+            data-image="${item.image}"
+            data-image2x="${item.image2x}"
+            data-width="${item.width}"
+            data-height="${item.height}"
+            data-alt="${item.alt}"
+          >
+            ${item.name}
+          </button>
+        </h3>
         <p class="card__price">$${item.price}</p>
-        <button class="button card__order" type="button">Order</button>
       </li>`;
   }
 

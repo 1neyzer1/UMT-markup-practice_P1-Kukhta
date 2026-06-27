@@ -8,7 +8,8 @@
       "image2x": "./images/bouquet-1-2x.jpg",
       "width": 296,
       "height": 197,
-      "alt": "Peach Meadow bouquet"
+      "alt": "Peach Meadow bouquet",
+      "description": "Soft peach blooms gathered with airy greenery for a warm, sunlit feel. Each stem is hand-selected to bring a gentle glow to any room."
     },
     {
       "id": 2,
@@ -18,7 +19,8 @@
       "image2x": "./images/bouquet-2-2x.jpg",
       "width": 296,
       "height": 197,
-      "alt": "Blush Romance bouquet"
+      "alt": "Blush Romance bouquet",
+      "description": "Delicate blush petals arranged to whisper tenderness and grace. Chosen fresh to keep their soft, romantic charm for days."
     },
     {
       "id": 3,
@@ -28,7 +30,8 @@
       "image2x": "./images/bouquet-3-2x.jpg",
       "width": 296,
       "height": 274,
-      "alt": "Pastel Garden bouquet"
+      "alt": "Pastel Garden bouquet",
+      "description": "A relaxed mix of pastel blossoms that feels freshly picked from the garden. Light, fragrant, and full of natural movement."
     },
     {
       "id": 4,
@@ -38,7 +41,8 @@
       "image2x": "./images/bouquet-4-2x.jpg",
       "width": 296,
       "height": 370,
-      "alt": "Tulip Charm bouquet"
+      "alt": "Tulip Charm bouquet",
+      "description": "Crisp seasonal tulips bundled for a bright, cheerful statement. Each stem is picked at its peak for lasting freshness."
     },
     {
       "id": 5,
@@ -48,7 +52,8 @@
       "image2x": "./images/bouquet-5-2x.jpg",
       "width": 296,
       "height": 286,
-      "alt": "Berry Bloom bouquet"
+      "alt": "Berry Bloom bouquet",
+      "description": "Rich berry tones layered with lush foliage for depth and warmth. Composed to feel both bold and quietly inviting."
     },
     {
       "id": 6,
@@ -58,7 +63,8 @@
       "image2x": "./images/bouquet-6-2x.jpg",
       "width": 296,
       "height": 444,
-      "alt": "Sweet Whisper bouquet"
+      "alt": "Sweet Whisper bouquet",
+      "description": "Gentle blooms in the softest hues, arranged to feel calm and serene. Hand-tied with care to preserve their quiet beauty."
     },
     {
       "id": 7,
@@ -68,7 +74,8 @@
       "image2x": "./images/bouquet-7-2x.jpg",
       "width": 296,
       "height": 433,
-      "alt": "Field Joy bouquet"
+      "alt": "Field Joy bouquet",
+      "description": "A wild, free-spirited gathering of meadow flowers and greens. Each stem captures the easy charm of an open field."
     },
     {
       "id": 8,
@@ -78,7 +85,8 @@
       "image2x": "./images/bouquet-8-2x.jpg",
       "width": 296,
       "height": 196,
-      "alt": "Soft Bloom bouquet"
+      "alt": "Soft Bloom bouquet",
+      "description": "Light, full blossoms arranged for a delicate, understated elegance. Selected to radiate freshness and gentle grace."
     }
   ]
 }
