@@ -56,7 +56,7 @@ python3 -m http.server   # далі відкрий http://localhost:8000
 
 ## 🌐 Live demo
 
-GitHub Pages —
+GitHub Pages — https://github.com/1neyzer1/UMT-markup-practice_P1-Kukhta.git
 
 ## 📁 Структура
 
