@@ -19,11 +19,8 @@
   --color-divider: #030c0126;
   --color-barberry: #e8e81c; /* Color/Barberry — CTA gradient start */
   --color-harlequin: #42ed13; /* Color/Harlequin — CTA gradient end */
-  --color-harlequin-lighter: #d9fbcf; /* Slider arrow hover bg (macet) */
   /* Color Scheme 5/Background — light yellow surface */
   --color-accent-surface: #eeee60;
-  --color-backdrop: rgba(3, 12, 1, 0.6); /* modal overlay (dark, semi-opaque) */
-  --color-placeholder: rgba(3, 12, 1, 0.6); /* input placeholder text */
 
   /* Primary button fill (CTA): barberry → harlequin gradient */
   --gradient-cta: linear-gradient(
@@ -123,10 +120,7 @@
   --contacts-details-w: 500px; /* Contacts right column width */
   --contacts-img-h: 720px; /* Contacts photo height */
   --testimonial-h: 228px; /* Feedback card height */
-  --dot-size: 8px; /* slider pagination dot diameter (macet) */
   --footer-logo-h: 126px; /* Footer logo height */
-  --product-modal-w: 900px; /* product modal width (desktop, 2-col) */
-  --qty-w: 64px; /* product modal quantity input width */
 
   /* ── Radii / borders (global) ───────────────────────────── */
   --radius-medium: 16px; /* Radius/Medium */
@@ -134,9 +128,6 @@
   --radius-pill: 100px; /* CTA pill (get_code: rounded-[100px]) */
   --border-width: 1px; /* Stroke/Border Width */
   --divider-width: 1px; /* Stroke/Divider Width */
-  --radius-input: 12px; /* form input radius (macet) */
-  --radius-small: 4px; /* custom checkbox box radius */
-  --textarea-h: 180px; /* modal message textarea height (macet) */
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -190,11 +181,6 @@ body {
    so the mouse/hover appearance and the macet stay untouched. WCAG 2.4.7.
    Inputs keep their own macet border-colour focus state (outline: none). */
 :focus-visible {
-  outline: 2px solid var(--color-text);
-  outline-offset: 2px;
-}
-
-.checkbox__input:focus-visible ~ .checkbox__box {
   outline: 2px solid var(--color-text);
   outline-offset: 2px;
 }
@@ -307,10 +293,8 @@ body {
 .contacts__link,
 .socials__link,
 .logo,
-.slider-dots__dot,
 .burger,
-.nav__close,
-.slider-controls__button {
+.nav__close {
   transition:
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
     background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -326,20 +310,11 @@ body {
 .socials__link:focus-visible,
 .logo:hover,
 .logo:focus-visible,
-.slider-dots__dot:hover,
-.slider-dots__dot:focus-visible,
 .burger:hover,
 .burger:focus-visible,
 .nav__close:hover,
 .nav__close:focus-visible {
   opacity: 0.6; /* macet: Link/Hover */
-}
-
-.slider-controls__button:hover,
-.slider-controls__button:focus-visible {
-  background-color: var(
-    --color-harlequin-lighter
-  ); /* macet: Slider Arrow/Hover */
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -448,26 +423,8 @@ body {
 
 /* ── Product card (shared: Bestsellers + Bouquets) ───────── */
 .card {
-  position: relative;
   display: flex;
   flex-direction: column;
-}
-
-/* The bouquet title is a button whose stretched ::after makes the whole card
-   open the product modal — keeps the <h3> a real heading and valid markup. */
-.card__button {
-  padding: 0;
-  font: inherit;
-  color: inherit;
-  background: none;
-  border: 0;
-  cursor: pointer;
-}
-
-.card__button::after {
-  content: '';
-  position: absolute;
-  inset: 0;
 }
 
 .card__image {
@@ -501,114 +458,6 @@ body {
 
 .bouquets__subtitle {
   font-size: var(--fs-text-medium);
-}
-
-/* ── Slider controls (shared arrow buttons) — visual only;
-      dots + mechanics are Stage 4 ──────────────────────────── */
-.slider-controls {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-16);
-}
-
-.slider-controls__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--tap-target);
-  height: var(--tap-target);
-  padding: 0;
-  background-color: var(--color-foreground);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-pill);
-  cursor: pointer;
-}
-
-/* ── Sliders (Stage 4): viewport + flex track + slides + dots.
-      Bestsellers & Feedbacks lists become flex tracks clipped by a
-      viewport; JS translates the track. Without JS the track wraps so
-      every card stays visible — see @media (scripting: none) below. ── */
-.slider__viewport {
-  overflow: hidden;
-}
-
-.slider__track {
-  display: flex;
-  gap: var(--space-24);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  transition: transform 0.4s ease;
-  will-change: transform;
-}
-
-.slider__slide {
-  flex: 0 0 100%;
-}
-
-.slider-dots {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-8);
-}
-
-.slider-dots__dot {
-  width: var(--dot-size);
-  height: var(--dot-size);
-  padding: 0;
-  background-color: var(--color-border);
-  border: 0;
-  border-radius: var(--radius-pill);
-  cursor: pointer;
-}
-
-.slider-dots__dot.is-active {
-  background-color: var(--color-text);
-}
-
-.slider-controls__arrows {
-  display: flex;
-  gap: var(--space-16);
-}
-
-.slider-controls__button:disabled {
-  opacity: 0.3; /* macet: Slider Arrow/Disabled */
-  cursor: default;
-}
-
-/* Bestsellers: dots row above arrows row, both centred. */
-.bestsellers .slider-controls {
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-24);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .slider__track {
-    transition: none;
-  }
-}
-
-/* No-JS fallback: relax the carousel into a static wrapped grid, and hide the
-   bouquets controls (filter chips + Show More) since the list is JS-rendered
-   and they would otherwise sit inert above an empty grid. */
-@media (scripting: none) {
-  .slider__viewport {
-    overflow: visible;
-  }
-
-  .slider__track {
-    flex-wrap: wrap;
-  }
-
-  .slider-controls {
-    display: none;
-  }
-
-  .bouquets__filters,
-  .bouquets__more {
-    display: none;
-  }
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -738,7 +587,7 @@ body {
    1 column; Tablet (2 cols) in @media 768; Desktop (@media 1440) untouched.
    ════════════════════════════════════════════════════════════ */
 
-/* Bouquets grid — Mobile: single column (Bestsellers is a slider track) */
+/* Bouquets grid — Mobile: single column */
 .bouquets__list {
   display: grid;
   grid-template-columns: 1fr;
@@ -760,6 +609,9 @@ body {
 }
 
 .bestsellers__list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-24);
   margin-bottom: var(--space-32);
 }
 
@@ -772,56 +624,8 @@ body {
   margin-bottom: var(--space-24);
 }
 
-/* Price filter chips — added for filtering; styled from existing tokens to
-   match the macet (white pill + border, light-green hover, gradient when
-   active), so it reads as part of Flora. */
-.bouquets__filters {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-12);
-  margin-bottom: var(--space-32);
-}
-
-.bouquets__filter {
-  padding: var(--space-8) var(--space-24);
-  font-size: var(--fs-text-small);
-  font-weight: var(--fw-medium);
-  color: var(--color-text);
-  background-color: var(--color-foreground);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-pill);
-  cursor: pointer;
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.bouquets__filter:hover,
-.bouquets__filter:focus-visible {
-  background-color: var(--color-harlequin-lighter);
-}
-
-.bouquets__filter[aria-pressed='true'] {
-  background-image: var(--gradient-cta);
-  border-color: var(--color-barberry);
-}
-
-/* The active chip's opaque gradient masks the hover background-color, so dim
-   it on interaction instead (matches the .button hover convention). */
-.bouquets__filter[aria-pressed='true']:hover,
-.bouquets__filter[aria-pressed='true']:focus-visible {
-  opacity: 0.5;
-}
-
 .bouquets__list {
   margin-bottom: var(--space-40);
-}
-
-/* Empty / end-of-results message — shown by JS when a filter returns nothing
-   (no `display` here so the default [hidden] rule keeps it hidden). */
-.bouquets__empty {
-  margin-bottom: var(--space-40);
-  color: var(--color-placeholder);
-  text-align: center;
 }
 
 /* Show More — Mobile: full-width */
@@ -830,18 +634,15 @@ body {
   width: 100%;
 }
 
-/* The author display:flex above outranks the UA [hidden] rule, so JS toggling
-   `hidden` (last page reached) needs this to actually hide the button. */
-.bouquets__more[hidden] {
-  display: none;
-}
-
 /* ════════════════════════════════════════════════════════════
    Sections — Mobile layout (Portion 3): Feedbacks · Contacts · Footer
    ════════════════════════════════════════════════════════════ */
 
-/* ── Feedbacks — Mobile: slider track (1 card); card height; arrows right ── */
+/* ── Feedbacks — Mobile: single-column grid; card height ── */
 .feedback__list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-24);
   margin-bottom: var(--space-32);
 }
 
@@ -851,10 +652,6 @@ body {
 
 .feedback__title {
   margin-bottom: var(--space-32);
-}
-
-.feedback .slider-controls {
-  justify-content: flex-end; /* arrows bottom-right on every breakpoint */
 }
 
 /* ── Contacts — Mobile: stack (intro → details → photo) ───── */
@@ -901,225 +698,6 @@ body {
 .socials__icon {
   width: var(--space-40); /* 40 — larger touch icon on Mobile */
   height: var(--space-40);
-}
-
-/* ════════════════════════════════════════════════════════════
-   Forms — order modal + footer newsletter (fields, custom checkbox)
-   ════════════════════════════════════════════════════════════ */
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-}
-
-.field__label {
-  font-size: var(--fs-text-regular);
-}
-
-.field__input {
-  width: 100%;
-  padding: var(--btn-py-sm) var(--space-12);
-  font: inherit;
-  color: var(--color-text);
-  background-color: transparent;
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-input);
-  transition: border-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.field__input::placeholder {
-  color: var(--color-placeholder);
-}
-
-.field__input:focus {
-  border-color: var(--color-text); /* macet: Text Input / Focused */
-  outline: none;
-}
-
-.field__textarea {
-  min-height: var(--textarea-h);
-  resize: vertical;
-}
-
-/* Custom checkbox — native input hidden; styled box + SVG check from sprite */
-.checkbox {
-  display: flex;
-  align-items: center;
-  gap: var(--space-12);
-  cursor: pointer;
-}
-
-.checkbox__input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: 0;
-  opacity: 0;
-}
-
-.checkbox__box {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: var(--space-24);
-  height: var(--space-24);
-  color: var(--color-text);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-small);
-  transition: border-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.checkbox__check {
-  display: block;
-  opacity: 0;
-  transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.checkbox__input:checked ~ .checkbox__box .checkbox__check {
-  opacity: 1;
-}
-
-.checkbox__input:focus-visible ~ .checkbox__box {
-  border-color: var(--color-text);
-}
-
-.checkbox__text {
-  font-size: var(--fs-text-regular);
-}
-
-/* ════════════════════════════════════════════════════════════
-   Order modal + backdrop (hidden until .is-open)
-   ════════════════════════════════════════════════════════════ */
-.backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: none;
-  padding: var(--space-16);
-  background-color: var(--color-backdrop);
-  overflow-y: auto;
-}
-
-.backdrop.is-open {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal {
-  position: relative;
-  width: 100%;
-  max-width: 600px;
-  margin-block: auto;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-32);
-  padding: var(--space-48) var(--space-32);
-  background-color: var(--color-background);
-  border-radius: var(--radius-large);
-}
-
-.modal__close {
-  position: absolute;
-  top: var(--space-16);
-  right: var(--space-16);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--tap-target);
-  height: var(--tap-target);
-  padding: 0;
-  color: var(--color-text);
-  background: none;
-  border: 0;
-  cursor: pointer;
-}
-
-.modal__title {
-  font-family: var(--font-heading);
-  font-weight: var(--fw-regular);
-  font-size: var(--fs-h2);
-  line-height: var(--lh-heading);
-  letter-spacing: var(--ls-heading);
-  text-align: center;
-}
-
-/* ── Product modal (bouquet details) — reuses .backdrop / .modal ── */
-.product__image {
-  width: 100%;
-  border-radius: var(--radius-medium);
-}
-
-.product__body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-16);
-}
-
-.product__title {
-  text-align: left;
-}
-
-/* Price in a bordered box (mirrors the .field__input border treatment) */
-.product__price {
-  align-self: flex-start;
-  padding: var(--btn-py-sm) var(--space-12);
-  font-size: var(--fs-text-large);
-  font-weight: var(--fw-semibold);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-input);
-}
-
-.product__description {
-  font-size: var(--fs-text-small);
-}
-
-.product__actions {
-  display: flex;
-  gap: var(--space-12);
-  align-items: center;
-  margin-top: var(--space-8);
-}
-
-.product__buy {
-  flex: 1;
-}
-
-.product__qty {
-  width: var(--qty-w);
-  text-align: center;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-24);
-}
-
-.form__submit {
-  align-self: center;
-}
-
-/* ── Footer newsletter form (spans the footer's top row) ─────── */
-.footer__newsletter {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-  width: 100%;
-  max-width: 480px;
-}
-
-.newsletter__controls {
-  display: flex;
-  gap: var(--space-12);
-}
-
-.newsletter__input {
-  flex: 1;
-  min-width: 0;
-  background-color: var(--color-background);
 }
 
 /* ── Tablet ≥ 768px ───────────────────────────────────────── */
@@ -1174,13 +752,14 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  /* Bestsellers + Feedbacks grids — Tablet: 2 columns */
   .bestsellers__list {
-    margin-bottom: var(--space-48); /* cards → controls (Tablet/Desktop) */
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: var(--space-48);
   }
 
-  /* Sliders — Tablet: 2 cards visible (Bestsellers + Feedbacks) */
-  .slider__slide {
-    flex-basis: calc((100% - var(--space-24)) / 2);
+  .feedback__list {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   /* Show More — Tablet: fixed width, centred */
@@ -1231,19 +810,6 @@ body {
     --hero-text-max: 667px; /* text column (get_code: Container 667) */
     --fs-h1: 3.5rem; /* 56px — display/Desktop/xxl */
     --fs-h2: 3rem; /* 48px — display/Desktop/xl */
-  }
-
-  /* Product modal — Desktop: image left, details right */
-  .product {
-    max-width: var(--product-modal-w);
-    flex-direction: row;
-    align-items: center;
-    gap: var(--space-48);
-  }
-
-  .product__media,
-  .product__body {
-    flex: 1;
   }
 
   /* Header — Desktop: inline nav centered, CTA right, no burger */
@@ -1308,22 +874,22 @@ body {
     flex: 1;
   }
 
-  /* ── Top-Selling — desktop: 3-col row + centred controls ── */
+  /* ── Top-Selling — desktop: 3-column grid ───────────────── */
   .bestsellers__title {
     max-width: var(--max-width-large);
   }
 
   .bestsellers__list {
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: var(--space-32);
     margin-bottom: var(--space-48);
   }
 
-  /* Sliders — desktop: 3 cards visible, 32 gap (Bestsellers + Feedbacks) */
-  .slider__track {
-    gap: var(--space-32);
-  }
-
-  .slider__slide {
-    flex-basis: calc((100% - 2 * var(--space-32)) / 3);
+  /* ── Feedbacks — desktop: 3-column grid ─────────────────── */
+  .feedback__list {
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: var(--space-32);
+    row-gap: var(--space-32);
   }
 
   /* ── Bouquets — desktop: 4×2 grid + Show More ───────────── */

@@ -2,13 +2,12 @@
 
 # 🌸 Flora — лендінг квіткового магазину
 
-Односторінковий флористичний лендінг
+Односторінковий флористичний лендінг за макетом Figma.
 
-Чистий **HTML + CSS + ванільний JavaScript**.
+Семантичний **HTML + CSS**, адаптив Mobile-First, мобільне меню на ванільному JS.
 
 ![HTML5](https://img.shields.io/badge/HTML5-семантика-E34F26?logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-Mobile--First-1572B6?logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-ванільний-F7DF1E?logo=javascript&logoColor=black)
 ![W3C](https://img.shields.io/badge/W3C-валідний-005A9C?logo=w3c&logoColor=white)
 ![Build](https://img.shields.io/badge/збірка-не_потрібна-4CAF50)
 
@@ -18,18 +17,15 @@
 
 ## ✨ Можливості
 
+- **Семантична розмітка** — `header`/`main`/`footer`/`nav`, один `h1`, `h2` на секцію, списки в `ul`, `figure`/`blockquote` у відгуках
 - **Адаптивність** — три брейкпоінти: мобайл `375`, планшет `768`, десктоп `1440`
   (Mobile-First каскад: база → `@media (min-width: 768px)` → `@media (min-width: 1440px)`)
-- **Бургер-меню** — доступний перемикач (`aria-expanded`, `Escape`, клік поза меню, скидання на десктопі)
-- **Слайдери** — каруселі _Bestsellers_ і _Feedbacks_ на ванільному JS: стрілки, динамічні доти, клавіатура (`←`/`→`), горизонтальний тач-свайп
-- **Динамічні дані** — список _Bouquets_ не зашитий у HTML: картки запитуються по HTTP (**axios**, `async/await`) з локального бекенду **json-server** (`db.json`) і вставляються у DOM
-- **Пагінація** — кнопка _Show More_ довантажує наступну сторінку (`_page`/`_per_page`) і доповнює сітку; ховається на останній сторінці
-- **Фільтрація** — чіпи за ціною (_All / Under \$40 / \$40–\$49 / \$50+_) керують параметрами запиту (`price_lt`/`price_gte`/`price_lte`); зміна фільтра скидає на 1-шу сторінку
-- **Модальне вікно** — форма замовлення (кнопка _Order_ на картці), форма підписки у футері, кастомний чекбокс
-- **Доступність** — ARIA-ролі та підписи, навігація з клавіатури, `prefers-reduced-motion`, no-JS фолбек `@media (scripting: none)` (усі картки лишаються видимими)
-- **Продуктивність** — retina-зображення (`srcset` 1×/2×), `loading="lazy"` нижче згину, явні `width`/`height` проти зсувів верстки
-- **Іконки** — зовнішній SVG-спрайт `images/icons.svg`: `<use href="./images/icons.svg#icon-…">`
-- **Стандарти** — валідні HTML (Nu) і CSS (Jigsaw)
+- **Дизайн-система** — усі кольори/розміри/відступи винесені в CSS-змінні (`:root`); `font-family` лише на `body`
+- **Мобільне меню** — повноекранний оверлей, відкривається класом `is-open` (доступно: `aria-expanded`, `Escape`, клік поза меню, фокус-пастка, скидання на десктопі)
+- **Іконки** — зовнішній SVG-спрайт `images/icons.svg` через `<use href="…#icon-…">`
+- **Декор + анімація** — багатошаровий фон/градієнт під hero; переходи `250ms cubic-bezier(0.4,0,0.2,1)`; бібліотека анімацій **animate.css**
+- **Ретина** — растр `srcset` 1×/2×; фон hero через `@media (min-resolution: 2dppx)`; `loading="lazy"` + явні `width`/`height`
+- **Стандарти** — валідні HTML (Nu) і CSS (Jigsaw), чиста консоль, форматування Prettier
 
 ## 🛠 Стек
 
@@ -37,16 +33,15 @@
 | ------------ | -------------------------------------------------------------------------------- |
 | Розмітка     | **HTML5** — семантика (лендмарки, заголовки, списки, `figure`/`blockquote`)      |
 | Стилі        | **CSS3** — Mobile-First, кастомні властивості (токени в `:root`), Flexbox і Grid |
-| Логіка       | **Ванільний JavaScript** — бургер-меню, каруселі, модалка, рендер списку         |
-| HTTP         | **axios** (через CDN) + `async/await`                                            |
-| Бекенд (dev) | **json-server** — віддає `db.json` на `http://localhost:3000`                    |
-| Нормалізація | **modern-normalize** через CDN                                                   |
-| Шрифти       | **Hanuman** + **Roboto** (Google Fonts)                                          |
+| Логіка       | **Ванільний JavaScript** — лише мобільне меню (`is-open`)                        |
+| Анімація     | **animate.css** (через CDN)                                                      |
+| Нормалізація | **modern-normalize** через CDN + `css/reset.css`                                 |
+| Шрифти       | **Hanuman** + **Roboto** (Google Fonts, одне посилання)                          |
 | Дизайн       | Макет **Figma**                                                                  |
 
 ## 🚀 Запуск
 
-Сама сторінка не потребує збірки — її можна просто відкрити:
+Без збірки й без встановлення — просто відкрий сторінку:
 
 ```bash
 
@@ -56,46 +51,23 @@ open index.html
 python3 -m http.server   # далі відкрий http://localhost:8000
 ```
 
-### Бекенд для динамічних даних (json-server)
-
-Список _Bouquets_ підвантажується по HTTP. Щоб віддати дані з `db.json`,
-підніми **json-server** (npx, нічого встановлювати не треба). Версію краще
-закріпити — без неї `npx` може взяти застарілий кеш зі **зміненим API**:
-
-```bash
-npx json-server@1.0.0-beta.15 db.json   # ендпойнт: http://localhost:3000/bouquets
-```
-
-**Параметри запитів** (json-server `1.0.0-beta.15`), якими керує фронтенд:
-
-| Призначення | Параметр                             | Приклад                      |
-| ----------- | ------------------------------------ | ---------------------------- |
-| Пагінація   | `_page`, `_per_page`                 | `?_page=2&_per_page=4`       |
-| Фільтр ціни | `price_lt`, `price_gte`, `price_lte` | `?price_gte=40&price_lte=49` |
-
-> Пагінована відповідь — це об'єкт-обгортка `{ data, next, pages, items, … }`
-> (рядки в `data`, `next: null` на останній сторінці) — **не** масив; розмір
-> сторінки — `_per_page` (а не `_limit`).
-
-Якщо json-server не запущено, сторінка тихо відкочується до прямого читання
-`db.json` й застосовує ту саму логіку фільтра/пагінації на клієнті, тож
-галерея поводиться однаково (зокрема на GitHub Pages без бекенду).
+> Спрайт `images/icons.svg` підключається через `<use href="…">`, тож для
+> коректного відображення іконок відкривай сторінку по http (не `file://`).
 
 ## 🌐 Live demo
 
-GitHub Pages — https://1neyzer1.github.io/UMT-markup-practice-Kukhta/#about
+GitHub Pages —
 
 ## 📁 Структура
 
 ```text
 /
 ├─ index.html        # семантична розмітка
-├─ db.json           # дані для json-server (список bouquets)
 ├─ css/
 │  ├─ reset.css      # скидання поверх modern-normalize
 │  └─ styles.css     # токени (:root) + Mobile-First стилі
 ├─ js/
-│  └─ main.js        # бургер-меню, слайдери, модалка, рендер списку
+│  └─ main.js        # мобільне меню (is-open)
 ├─ images/           # фото (x1/x2), лого, декор, спрайт, фавікони
 └─ README.md
 ```
