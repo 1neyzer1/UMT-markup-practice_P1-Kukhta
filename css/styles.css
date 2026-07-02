@@ -19,6 +19,7 @@
   --color-divider: #030c0126;
   --color-barberry: #e8e81c; /* Color/Barberry — CTA gradient start */
   --color-harlequin: #42ed13; /* Color/Harlequin — CTA gradient end */
+  --color-harlequin-lighter: #d9fbcf; /* Slider Arrow/Hover (macet) */
   /* Color Scheme 5/Background — light yellow surface */
   --color-accent-surface: #eeee60;
 
@@ -460,6 +461,34 @@ body {
   font-size: var(--fs-text-medium);
 }
 
+/* ── Slider controls (pagination arrows, from the macet) ──── */
+.slider-controls {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-16);
+}
+
+.slider-controls__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  padding: 0;
+  background-color: var(--color-foreground);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slider-controls__button:hover,
+.slider-controls__button:focus-visible {
+  background-color: var(
+    --color-harlequin-lighter
+  ); /* macet: Slider Arrow/Hover */
+}
+
 /* ════════════════════════════════════════════════════════════
    Sections — base, Portion B: Feedbacks · Contacts · Footer
    ════════════════════════════════════════════════════════════ */
@@ -608,11 +637,18 @@ body {
   margin-bottom: var(--space-32);
 }
 
+/* Bestsellers — one row on every breakpoint (carousel look from the macet):
+   flex track clipped by the list; 1 card visible on Mobile, 2 on Tablet,
+   3 on Desktop. The arrows below are the macet's pagination controls. */
 .bestsellers__list {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
   gap: var(--space-24);
+  overflow: hidden;
   margin-bottom: var(--space-32);
+}
+
+.bestsellers__list .card {
+  flex: 0 0 100%;
 }
 
 /* Bouquets spacing — constant: heading→subtitle 8, subtitle→grid 32, grid→button 40 */
@@ -638,12 +674,17 @@ body {
    Sections — Mobile layout (Portion 3): Feedbacks · Contacts · Footer
    ════════════════════════════════════════════════════════════ */
 
-/* ── Feedbacks — Mobile: single-column grid; card height ── */
+/* ── Feedbacks — one row on every breakpoint (carousel look from the macet):
+      1 card visible on Mobile, 2 on Tablet, 3 on Desktop; arrows right ── */
 .feedback__list {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
   gap: var(--space-24);
+  overflow: hidden;
   margin-bottom: var(--space-32);
+}
+
+.feedback__list .testimonial {
+  flex: 0 0 100%;
 }
 
 .testimonial__figure {
@@ -652,6 +693,10 @@ body {
 
 .feedback__title {
   margin-bottom: var(--space-32);
+}
+
+.feedback .slider-controls {
+  justify-content: flex-end; /* arrows bottom-right on every breakpoint */
 }
 
 /* ── Contacts — Mobile: stack (intro → details → photo) ───── */
@@ -744,6 +789,8 @@ body {
 
   .about__image {
     flex: 1;
+    min-width: 0; /* let the photo shrink below its intrinsic 600px so the
+                     text column keeps its half (flex min-size guard) */
     margin-top: 0; /* not stacked any more */
   }
 
@@ -752,14 +799,14 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* Bestsellers + Feedbacks grids — Tablet: 2 columns */
+  /* Bestsellers + Feedbacks — Tablet: 2 cards visible in the row */
   .bestsellers__list {
-    grid-template-columns: repeat(2, 1fr);
     margin-bottom: var(--space-48);
   }
 
-  .feedback__list {
-    grid-template-columns: repeat(2, 1fr);
+  .bestsellers__list .card,
+  .feedback__list .testimonial {
+    flex-basis: calc((100% - var(--space-24)) / 2);
   }
 
   /* Show More — Tablet: fixed width, centred */
@@ -880,16 +927,18 @@ body {
   }
 
   .bestsellers__list {
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: var(--space-32);
+    gap: var(--space-32);
     margin-bottom: var(--space-48);
   }
 
-  /* ── Feedbacks — desktop: 3-column grid ─────────────────── */
+  /* ── Feedbacks — desktop: 3 cards visible, 32 gap ─────────── */
   .feedback__list {
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: var(--space-32);
-    row-gap: var(--space-32);
+    gap: var(--space-32);
+  }
+
+  .bestsellers__list .card,
+  .feedback__list .testimonial {
+    flex-basis: calc((100% - 2 * var(--space-32)) / 3);
   }
 
   /* ── Bouquets — desktop: 4×2 grid + Show More ───────────── */
